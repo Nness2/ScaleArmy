@@ -19,6 +19,9 @@ public class GenericClass : MonoBehaviour
         BackMiddle,
         BackLeft,
         BackRight,
+        FrontLeft,
+        FrontRight,
+        Totem,
     }
 
     void Start()

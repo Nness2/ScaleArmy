@@ -10,6 +10,7 @@ public class SoldierBehavior : MonoBehaviour
     public float speed = 5.0f;
     public float followDistance = 3.0f;
     public float smoothTime = 0.3f;
+    public GameObject Totem;
 
     private Vector3 velocity = Vector3.zero;
 
@@ -19,7 +20,7 @@ public class SoldierBehavior : MonoBehaviour
 
     //Enemy Things
     private GameObject[] targets;        // Tableau contenant tous les PNJ cibles
-    private GameObject currentTarget;    // Référence au PNJ cible actuel
+    public GameObject currentTarget;    // Référence au PNJ cible actuel
     private Statistique currentTargetStatistique;    // Référence au PNJ cible actuel
     public string targetTag = "Enemy"; // Tag du PNJ cible
 
@@ -62,6 +63,12 @@ public class SoldierBehavior : MonoBehaviour
                         break;
                     case GenericClass.E_Zone.BackRight:
                         player = army_Script.ZonesBackRight.transform;
+                        break;
+                    case GenericClass.E_Zone.FrontLeft:
+                        player = army_Script.ZonesFrontLeft.transform;
+                        break;
+                    case GenericClass.E_Zone.FrontRight:
+                        player = Totem.transform;
                         break;
                 }
                 // Calcule la distance entre le PNJ et le joueur
@@ -109,6 +116,15 @@ public class SoldierBehavior : MonoBehaviour
                             break;
                         case GenericClass.E_Zone.BackRight:
                             player = army_Script.ZonesBackRight.transform;
+                            break;
+                        case GenericClass.E_Zone.FrontLeft:
+                            player = army_Script.ZonesFrontLeft.transform;
+                            break;
+                        case GenericClass.E_Zone.FrontRight:
+                            player = army_Script.ZonesFrontRight.transform;
+                            break;
+                        case GenericClass.E_Zone.Totem:
+                            player = Totem.transform;
                             break;
                     }
                     // Calcule la distance entre le PNJ et le joueur
@@ -162,28 +178,37 @@ public class SoldierBehavior : MonoBehaviour
                 // Si on a une cible actuelle
                 if (currentTarget != null)
                 {
-                    // Calcule la distance entre l'ennemi et la cible
-                    distance = Vector3.Distance(currentTarget.transform.position, transform.position);
-                    // Si la cible est à portée d'attaque
-                    if (distance < DetectDistance && distance >= attackDistance)
+                    if(currentTarget.transform.tag == "MyMonster")
                     {
-                        transform.position = Vector3.MoveTowards(transform.position, currentTarget.transform.position, speed * Time.deltaTime);
+                        currentTarget = null;
+                        SelfIdle = false;
                     }
-                    else if (distance < attackDistance && !isAttacking)
+                    else
                     {
-                        if (currentTarget.transform.tag == "MyMonster")
+                        // Calcule la distance entre l'ennemi et la cible
+                        distance = Vector3.Distance(currentTarget.transform.position, transform.position);
+                        // Si la cible est à portée d'attaque
+                        if (distance < DetectDistance && distance >= attackDistance)
                         {
-                            currentTarget = null;
+                            transform.position = Vector3.MoveTowards(transform.position, currentTarget.transform.position, speed * Time.deltaTime);
                         }
-                        else
+                        else if (distance < attackDistance && !isAttacking)
                         {
-                            isAttacking = true; // set your bool to true
+                            if (currentTarget.transform.tag == "MyMonster")
+                            {
+                                currentTarget = null;
+                            }
+                            else
+                            {
+                                isAttacking = true; // set your bool to true
 
-                            StartCoroutine(ResetBoolAfterDelay());
+                                StartCoroutine(ResetBoolAfterDelay());
 
-                            currentTargetStatistique.TakeDamage(_damage);
+                                currentTargetStatistique.TakeDamage(_damage);
+                            }
                         }
                     }
+                    
                 }
                 #endregion
                 break;

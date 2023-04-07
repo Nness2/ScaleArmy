@@ -25,6 +25,8 @@ public class PlayerController : MonoBehaviour
         ActivesZone.Add(GenericClass.E_Zone.BackLeft);
         ActivesZone.Add(GenericClass.E_Zone.BackMiddle);
         ActivesZone.Add(GenericClass.E_Zone.BackRight);
+        ActivesZone.Add(GenericClass.E_Zone.FrontLeft);
+        ActivesZone.Add(GenericClass.E_Zone.FrontRight);
     }
 
     private void FixedUpdate()
@@ -120,6 +122,22 @@ public class PlayerController : MonoBehaviour
     }
 
     public void SelectZoneRightR()
+    {
+        if (ActivesZone.Contains(GenericClass.E_Zone.BackRight))
+
+        {
+            ActivesZone.Remove(GenericClass.E_Zone.BackRight);
+            buttonRightR.color = white;
+        }
+        else
+        {
+            ActivesZone.Add(GenericClass.E_Zone.BackRight);
+            buttonRightR.color = green;
+
+        }
+    }
+
+    public void SelectZoneFront()
     {
         if (ActivesZone.Contains(GenericClass.E_Zone.BackRight))
 

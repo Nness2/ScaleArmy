@@ -46,6 +46,10 @@ public class FeedManager : MonoBehaviour
                 if (Physics.Raycast(ray2, -transform.up * 100, out hit2, 100, layerMask2))
                 {
                     newZone = hit2.collider.gameObject.GetComponent<ZoneInfos>().zone;
+                    if (hit2.collider.gameObject.GetComponent<ZoneInfos>().zone == GenericClass.E_Zone.Totem)
+                    {
+                        GetComponent<SoldierBehavior>().Totem = hit2.collider.gameObject;
+                    }
                 }
                 else
                 {
