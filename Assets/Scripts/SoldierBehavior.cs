@@ -31,9 +31,10 @@ public class SoldierBehavior : MonoBehaviour
 
     public bool SelfIdle;
 
-    public GenericClass.E_Zone _zoneAttribute = GenericClass.E_Zone.BackMiddle;
+    public GenericClass.E_Zone _zoneAttribute = GenericClass.E_Zone.Back;
 
     public float attackSpeed = 1;
+
 
     private void Start()
     {
@@ -45,34 +46,96 @@ public class SoldierBehavior : MonoBehaviour
     }
     private void Update()
     {
+        float distance = 0;
         switch (_actionState)
         {
             case GenericClass.E_Action.Wait:
+                #region Attack
 
+                // Si on n'a pas de cible actuelle et qu'on n'est pas déjà en train d'attaquer
+                if (currentTarget == null)
+                {
+
+                    // Trouve le PNJ le plus proche
+
+
+                    targets = GameObject.FindGameObjectsWithTag(targetTag);
+                    float minDistance = Mathf.Infinity;
+                    foreach (GameObject target in targets)
+                    {
+                        distance = Vector3.Distance(target.transform.position, transform.position);
+                        if (distance < minDistance)
+                        {
+                            if (distance < DetectDistance)
+                            {
+                                currentTarget = target;
+                                currentTargetStatistique = currentTarget.GetComponent<Statistique>();
+                                minDistance = distance;
+                            }
+
+                        }
+                    }
+                }
+
+                // Si on a une cible actuelle
+                if (currentTarget != null)
+                {
+
+
+                    // Calcule la distance entre l'ennemi et la cible
+                    distance = Vector3.Distance(currentTarget.transform.position, transform.position);
+                    // Si la cible est à portée d'attaque
+                    if (distance >= attackDistance)
+                    {
+                        transform.position = Vector3.MoveTowards(transform.position, currentTarget.transform.position, speed * Time.deltaTime);
+                    }
+                    if (distance < attackDistance && !isAttacking)
+                    {
+                        if (currentTarget.transform.tag == "MyMonster")
+                        {
+                            currentTarget = null;
+                        }
+                        else
+                        {
+                            isAttacking = true; // set your bool to true
+
+                            StartCoroutine(ResetBoolAfterDelay());
+
+                            currentTargetStatistique.TakeDamage(_damage);
+                        }
+                    }
+
+
+                }
+                #endregion
                 break;
             case GenericClass.E_Action.Follow:
                 #region Follow
 
                 switch (_zoneAttribute)
                 {
-                    case GenericClass.E_Zone.BackMiddle:
+                    case GenericClass.E_Zone.Back:
                         player = army_Script.ZonesBackMiddle.transform;
                         break;
-                    case GenericClass.E_Zone.BackLeft:
-                        player = army_Script.ZonesBackLeft.transform;
+                    case GenericClass.E_Zone.Left:
+                        player = army_Script.ZonesLeft.transform;
                         break;
-                    case GenericClass.E_Zone.BackRight:
-                        player = army_Script.ZonesBackRight.transform;
+                    case GenericClass.E_Zone.Right:
+                        player = army_Script.ZonesRight.transform;
                         break;
-                    case GenericClass.E_Zone.FrontLeft:
+                    case GenericClass.E_Zone.Totem:
+                        player = Totem.transform;
+                        break;
+                    /*case GenericClass.E_Zone.FrontLeft:
                         player = army_Script.ZonesFrontLeft.transform;
                         break;
                     case GenericClass.E_Zone.FrontRight:
                         player = Totem.transform;
-                        break;
+                        break;*/
+
                 }
                 // Calcule la distance entre le PNJ et le joueur
-                float distance = Vector3.Distance(player.position, transform.position);
+                distance = Vector3.Distance(player.position, transform.position);
                 // Si la distance est supérieure à la distance de suivi souhaitée
                 if (distance > followDistance && !SelfIdle)
                 {
@@ -108,24 +171,25 @@ public class SoldierBehavior : MonoBehaviour
                     #region Follow
                     switch (_zoneAttribute)
                     {
-                        case GenericClass.E_Zone.BackMiddle:
+                        case GenericClass.E_Zone.Back:
                             player = army_Script.ZonesBackMiddle.transform;
                             break;
-                        case GenericClass.E_Zone.BackLeft:
-                            player = army_Script.ZonesBackLeft.transform;
+                        case GenericClass.E_Zone.Left:
+                            player = army_Script.ZonesLeft.transform;
                             break;
-                        case GenericClass.E_Zone.BackRight:
-                            player = army_Script.ZonesBackRight.transform;
-                            break;
-                        case GenericClass.E_Zone.FrontLeft:
-                            player = army_Script.ZonesFrontLeft.transform;
-                            break;
-                        case GenericClass.E_Zone.FrontRight:
-                            player = army_Script.ZonesFrontRight.transform;
+                        case GenericClass.E_Zone.Right:
+                            player = army_Script.ZonesRight.transform;
                             break;
                         case GenericClass.E_Zone.Totem:
                             player = Totem.transform;
                             break;
+                        /*case GenericClass.E_Zone.FrontLeft:
+                            player = army_Script.ZonesFrontLeft.transform;
+                            break;
+                        case GenericClass.E_Zone.FrontRight:
+                            player = army_Script.ZonesFrontRight.transform;
+                            break;*/
+
                     }
                     // Calcule la distance entre le PNJ et le joueur
                     distance = Vector3.Distance(player.position, transform.position);
@@ -178,45 +242,51 @@ public class SoldierBehavior : MonoBehaviour
                 // Si on a une cible actuelle
                 if (currentTarget != null)
                 {
-                    if(currentTarget.transform.tag == "MyMonster")
+
+
+                    // Calcule la distance entre l'ennemi et la cible
+                    distance = Vector3.Distance(currentTarget.transform.position, transform.position);
+                    // Si la cible est à portée d'attaque
+                    if (distance >= attackDistance)
                     {
-                        currentTarget = null;
-                        SelfIdle = false;
+                        transform.position = Vector3.MoveTowards(transform.position, currentTarget.transform.position, speed * Time.deltaTime);
                     }
-                    else
+                    if (distance < attackDistance && !isAttacking)
                     {
-                        // Calcule la distance entre l'ennemi et la cible
-                        distance = Vector3.Distance(currentTarget.transform.position, transform.position);
-                        // Si la cible est à portée d'attaque
-                        if (distance < DetectDistance && distance >= attackDistance)
+                        if (currentTarget.transform.tag == "MyMonster")
                         {
-                            transform.position = Vector3.MoveTowards(transform.position, currentTarget.transform.position, speed * Time.deltaTime);
+                            currentTarget = null;
                         }
-                        else if (distance < attackDistance && !isAttacking)
+                        else
                         {
-                            if (currentTarget.transform.tag == "MyMonster")
-                            {
-                                currentTarget = null;
-                            }
-                            else
-                            {
-                                isAttacking = true; // set your bool to true
+                            isAttacking = true; // set your bool to true
 
-                                StartCoroutine(ResetBoolAfterDelay());
+                            StartCoroutine(ResetBoolAfterDelay());
 
-                                currentTargetStatistique.TakeDamage(_damage);
-                            }
+                            currentTargetStatistique.TakeDamage(_damage);
                         }
                     }
-                    
+
+
                 }
                 #endregion
                 break;
         }
+
+        if (currentTarget != null)
+        {
+            if (currentTarget.transform.tag == "MyMonster" && SelfIdle)
+            {
+                currentTarget = null;
+                SelfIdle = false;
+            }
+        }
+        LaunchAttack();
     }
 
     IEnumerator ResetBoolAfterDelay()
     {
+        //GetComponent<Rigidbody>().AddForce(((currentTarget.transform.position + new Vector3(0, 0, 0)) - transform.position) * 33);
         yield return new WaitForSeconds(attackSpeed); // wait for 1 second
         isAttacking = false; // set your bool to false
     }
@@ -235,7 +305,13 @@ public class SoldierBehavior : MonoBehaviour
             }
         }
 
-
+        if (collision.transform.tag == "ground")
+        {
+            if (SelfIdle == false)
+            {
+                //GetComponent<Rigidbody>().AddForce(((new Vector3(0, 60, 0))));
+            }
+        }
     }
     private void OnTriggerStay(Collider other)
     {
@@ -244,6 +320,30 @@ public class SoldierBehavior : MonoBehaviour
             if (other.transform.gameObject.GetComponent<ZoneInfos>().zone == _zoneAttribute)
             {
                 SelfIdle = true;
+            }
+        }
+    }
+
+
+
+    private void LaunchAttack()
+    {
+        if (Input.GetMouseButtonDown(0))
+        {
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            int layerMask3 = 1 << LayerMask.NameToLayer("Monster");  // ignore tous les layers sauf "Zone"
+            RaycastHit hit;
+            if (Physics.Raycast(ray.origin, ray.direction * 100, out hit, layerMask3))
+            {
+                if (hit.transform.tag == "Enemy")
+                {
+                    if (Character.GetComponent<PlayerController>().ActivesZone.Contains(_zoneAttribute))
+                    {
+                        currentTarget = hit.transform.gameObject;
+                        currentTargetStatistique = currentTarget.GetComponent<Statistique>();
+                        //GetComponent<Rigidbody>().AddForce(((currentTarget.transform.position + new Vector3(0,60,0)) - transform.position) * 3);
+                    }
+                }
             }
         }
     }

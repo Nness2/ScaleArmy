@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class ZoneInfos : MonoBehaviour
 {
-    public GenericClass.E_Zone zone = GenericClass.E_Zone.BackMiddle;
+    public GenericClass.E_Zone zone = GenericClass.E_Zone.Back;
     void Start()
     {
         

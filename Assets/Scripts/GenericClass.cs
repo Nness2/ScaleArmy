@@ -16,12 +16,12 @@ public class GenericClass : MonoBehaviour
     [System.Serializable]
     public enum E_Zone
     {
-        BackMiddle,
-        BackLeft,
-        BackRight,
-        FrontLeft,
-        FrontRight,
+        Back,
+        Left,
+        Right,
         Totem,
+        //FrontLeft,
+        //FrontRight,
     }
 
     void Start()

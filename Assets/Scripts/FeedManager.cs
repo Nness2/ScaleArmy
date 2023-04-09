@@ -8,11 +8,13 @@ public class FeedManager : MonoBehaviour
     public GenericClass.E_Zone newZone;
     private GameObject Tofeed;
     public ArmyManager armyManager_Script;
+    public PlayerController plyrControl_Script;
     void Start()
     {
         MouseDown = false;
         newZone = GetComponent<SoldierBehavior>()._zoneAttribute;
         armyManager_Script = GameObject.FindGameObjectWithTag("LocalPlayer").GetComponent<ArmyManager>();
+        plyrControl_Script = GameObject.FindGameObjectWithTag("LocalPlayer").GetComponent<PlayerController>();
         Tofeed = null;
     }
 
@@ -25,7 +27,7 @@ public class FeedManager : MonoBehaviour
                 GetComponent<SoldierBehavior>().enabled = false;
 
                 //int groundLayer = LayerMask.NameToLayer("Default");
-                int layerMask = 1 << LayerMask.NameToLayer("Ground"); // ignore tous les layers sauf "Ground"
+                int layerMask = 1 << LayerMask.NameToLayer("CircleLimite"); // ignore tous les layers sauf "Ground"
 
 
                 Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -46,6 +48,7 @@ public class FeedManager : MonoBehaviour
                 if (Physics.Raycast(ray2, -transform.up * 100, out hit2, 100, layerMask2))
                 {
                     newZone = hit2.collider.gameObject.GetComponent<ZoneInfos>().zone;
+
                     if (hit2.collider.gameObject.GetComponent<ZoneInfos>().zone == GenericClass.E_Zone.Totem)
                     {
                         GetComponent<SoldierBehavior>().Totem = hit2.collider.gameObject;
@@ -54,7 +57,6 @@ public class FeedManager : MonoBehaviour
                 else
                 {
                     newZone = GetComponent<SoldierBehavior>()._zoneAttribute;
-
                 }
 
 
@@ -81,6 +83,8 @@ public class FeedManager : MonoBehaviour
                 GetComponent<SoldierBehavior>().enabled = true;
             }
         }
+        //plyrControl_Script.ChangeActivity(); //ça update pas
+
     }
 
     void OnMouseDown()
@@ -90,6 +94,7 @@ public class FeedManager : MonoBehaviour
             MouseDown = true;
             transform.gameObject.layer = LayerMask.NameToLayer("Default");
             armyManager_Script.ShowZones(true);
+            plyrControl_Script.CircleLimite.SetActive(true);
         }
     }
 
@@ -101,6 +106,8 @@ public class FeedManager : MonoBehaviour
             transform.gameObject.layer = LayerMask.NameToLayer("Monster");
             armyManager_Script.ShowZones(false);
             GetComponent<SoldierBehavior>().SelfIdle = false;
+            plyrControl_Script.CircleLimite.SetActive(false);
+
 
 
 
@@ -123,5 +130,6 @@ public class FeedManager : MonoBehaviour
 
             }
         }
+
     }
 }

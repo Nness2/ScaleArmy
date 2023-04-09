@@ -13,6 +13,7 @@ public class PlayerController : MonoBehaviour
 
     public List<GenericClass.E_Zone> ActivesZone;
 
+    public GameObject CircleLimite;
     public Image buttonCenterR;
     public Image buttonLeftR;
     public Image buttonRightR;
@@ -20,13 +21,15 @@ public class PlayerController : MonoBehaviour
     public Color green;
     public Color white;
 
+
+
     void Start()
     {
-        ActivesZone.Add(GenericClass.E_Zone.BackLeft);
-        ActivesZone.Add(GenericClass.E_Zone.BackMiddle);
-        ActivesZone.Add(GenericClass.E_Zone.BackRight);
-        ActivesZone.Add(GenericClass.E_Zone.FrontLeft);
-        ActivesZone.Add(GenericClass.E_Zone.FrontRight);
+        ActivesZone.Add(GenericClass.E_Zone.Left);
+        ActivesZone.Add(GenericClass.E_Zone.Back);
+        ActivesZone.Add(GenericClass.E_Zone.Right);
+        //ActivesZone.Add(GenericClass.E_Zone.FrontLeft);
+        //ActivesZone.Add(GenericClass.E_Zone.FrontRight);
     }
 
     private void FixedUpdate()
@@ -71,6 +74,8 @@ public class PlayerController : MonoBehaviour
             if (ActivesZone.Contains(obj.GetComponent<SoldierBehavior>()._zoneAttribute))
             {
                 obj.GetComponent<SoldierBehavior>()._actionState = GenericClass.E_Action.Follow;
+                obj.GetComponent<SoldierBehavior>().SelfIdle = false;
+                obj.GetComponent<SoldierBehavior>().currentTarget = null;
             }
         }
     }
@@ -81,7 +86,7 @@ public class PlayerController : MonoBehaviour
 
         foreach (GameObject obj in Army)
         {
-            if (ActivesZone.Contains(obj.GetComponent<SoldierBehavior>()._zoneAttribute))
+            if (!ActivesZone.Contains(obj.GetComponent<SoldierBehavior>()._zoneAttribute))
             {
                 obj.GetComponent<SoldierBehavior>()._actionState = GenericClass.E_Action.Wait;
             }
@@ -91,65 +96,74 @@ public class PlayerController : MonoBehaviour
 
     public void SelectZoneCenterR()
     {
-        if(ActivesZone.Contains(GenericClass.E_Zone.BackMiddle))
+        if(ActivesZone.Contains(GenericClass.E_Zone.Back))
         {
-            ActivesZone.Remove(GenericClass.E_Zone.BackMiddle);
+            ActivesZone.Remove(GenericClass.E_Zone.Back);
             buttonCenterR.color = white;
+            ChangeActionToWait();
+
         }
         else
         {
-            ActivesZone.Add(GenericClass.E_Zone.BackMiddle);
+            ActivesZone.Add(GenericClass.E_Zone.Back);
             buttonCenterR.color = green;
-
+            ChangeActionToAttack();
         }
+        //ChangeActivity();
     }
 
     public void SelectZoneLeftR()
     {
-        if (ActivesZone.Contains(GenericClass.E_Zone.BackLeft))
+        if (ActivesZone.Contains(GenericClass.E_Zone.Left))
 
         {
-            ActivesZone.Remove(GenericClass.E_Zone.BackLeft);
+            ActivesZone.Remove(GenericClass.E_Zone.Left);
 
             buttonLeftR.color = white;
+            ChangeActionToWait();
+
         }
         else
         {
-            ActivesZone.Add(GenericClass.E_Zone.BackLeft);
+            ActivesZone.Add(GenericClass.E_Zone.Left);
             buttonLeftR.color = green;
-
+            ChangeActionToAttack();
         }
+        //ChangeActivity();
     }
 
     public void SelectZoneRightR()
     {
-        if (ActivesZone.Contains(GenericClass.E_Zone.BackRight))
+        if (ActivesZone.Contains(GenericClass.E_Zone.Right))
 
         {
-            ActivesZone.Remove(GenericClass.E_Zone.BackRight);
+            ActivesZone.Remove(GenericClass.E_Zone.Right);
             buttonRightR.color = white;
+            ChangeActionToWait();
+
         }
         else
         {
-            ActivesZone.Add(GenericClass.E_Zone.BackRight);
+            ActivesZone.Add(GenericClass.E_Zone.Right);
             buttonRightR.color = green;
-
+            ChangeActionToAttack();
         }
+        //ChangeActivity();
     }
 
-    public void SelectZoneFront()
+    public void ChangeActivity()
     {
-        if (ActivesZone.Contains(GenericClass.E_Zone.BackRight))
-
+        GameObject[] soldiers = GameObject.FindGameObjectsWithTag("MyMonster");
+        foreach (GameObject Soldier in soldiers)
         {
-            ActivesZone.Remove(GenericClass.E_Zone.BackRight);
-            buttonRightR.color = white;
-        }
-        else
-        {
-            ActivesZone.Add(GenericClass.E_Zone.BackRight);
-            buttonRightR.color = green;
-
+            if (ActivesZone.Contains(Soldier.GetComponent<SoldierBehavior>()._zoneAttribute))
+            {
+                Soldier.GetComponent<Statistique>()._healthbar.color = green;
+            }
+            else
+            {
+                Soldier.GetComponent<Statistique>()._healthbar.color = white;
+            }
         }
     }
 
