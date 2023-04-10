@@ -16,7 +16,14 @@ public class Statistique : MonoBehaviour
 
     void Start()
     {
-        _health = _startHealth;
+        if (_health == 0)
+        {
+            _health = _startHealth;
+        }
+        else
+        {
+            ChangeHealthValue((int)_health);
+        }
     }
 
     // Update is called once per frame

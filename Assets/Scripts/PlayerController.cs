@@ -67,86 +67,102 @@ public class PlayerController : MonoBehaviour
 
     public void ChangeActionToFollow()
     {
-        GameObject[] Army = GameObject.FindGameObjectsWithTag("MyMonster");
-
-        foreach (GameObject obj in Army)
+        if (this.enabled)
         {
-            if (ActivesZone.Contains(obj.GetComponent<SoldierBehavior>()._zoneAttribute))
+            GameObject[] Army = GameObject.FindGameObjectsWithTag("MyMonster");
+
+            foreach (GameObject obj in Army)
             {
-                obj.GetComponent<SoldierBehavior>()._actionState = GenericClass.E_Action.Follow;
-                obj.GetComponent<SoldierBehavior>().SelfIdle = false;
-                obj.GetComponent<SoldierBehavior>().currentTarget = null;
+                if (ActivesZone.Contains(obj.GetComponent<SoldierBehavior>()._zoneAttribute))
+                {
+                    obj.GetComponent<SoldierBehavior>()._actionState = GenericClass.E_Action.Follow;
+                    obj.GetComponent<SoldierBehavior>().SelfIdle = false;
+                    obj.GetComponent<SoldierBehavior>().currentTarget = null;
+                }
             }
         }
     }
 
     public void ChangeActionToWait()
     {
-        GameObject[] Army = GameObject.FindGameObjectsWithTag("MyMonster");
-
-        foreach (GameObject obj in Army)
+        if (this.enabled)
         {
-            if (!ActivesZone.Contains(obj.GetComponent<SoldierBehavior>()._zoneAttribute))
+            GameObject[] Army = GameObject.FindGameObjectsWithTag("MyMonster");
+
+            foreach (GameObject obj in Army)
             {
-                obj.GetComponent<SoldierBehavior>()._actionState = GenericClass.E_Action.Wait;
+                if (!ActivesZone.Contains(obj.GetComponent<SoldierBehavior>()._zoneAttribute))
+                {
+                    obj.GetComponent<SoldierBehavior>()._actionState = GenericClass.E_Action.Wait;
+                }
             }
         }
+
     }
 
 
     public void SelectZoneCenterR()
     {
-        if(ActivesZone.Contains(GenericClass.E_Zone.Back))
+        if (this.enabled)
         {
-            ActivesZone.Remove(GenericClass.E_Zone.Back);
-            buttonCenterR.color = white;
-            ChangeActionToWait();
+            if (ActivesZone.Contains(GenericClass.E_Zone.Back))
+            {
+                ActivesZone.Remove(GenericClass.E_Zone.Back);
+                buttonCenterR.color = white;
+                ChangeActionToWait();
 
-        }
-        else
-        {
-            ActivesZone.Add(GenericClass.E_Zone.Back);
-            buttonCenterR.color = green;
-            ChangeActionToAttack();
+            }
+            else
+            {
+                ActivesZone.Add(GenericClass.E_Zone.Back);
+                buttonCenterR.color = green;
+                ChangeActionToAttack();
+            }
         }
         //ChangeActivity();
     }
 
     public void SelectZoneLeftR()
     {
-        if (ActivesZone.Contains(GenericClass.E_Zone.Left))
-
+        if (this.enabled)
         {
-            ActivesZone.Remove(GenericClass.E_Zone.Left);
+            if (ActivesZone.Contains(GenericClass.E_Zone.Left))
 
-            buttonLeftR.color = white;
-            ChangeActionToWait();
+            {
+                ActivesZone.Remove(GenericClass.E_Zone.Left);
 
-        }
-        else
-        {
-            ActivesZone.Add(GenericClass.E_Zone.Left);
-            buttonLeftR.color = green;
-            ChangeActionToAttack();
+                buttonLeftR.color = white;
+                ChangeActionToWait();
+
+            }
+            else
+            {
+                ActivesZone.Add(GenericClass.E_Zone.Left);
+                buttonLeftR.color = green;
+                ChangeActionToAttack();
+            }
         }
         //ChangeActivity();
     }
 
     public void SelectZoneRightR()
     {
-        if (ActivesZone.Contains(GenericClass.E_Zone.Right))
-
+        if (this.enabled)
         {
-            ActivesZone.Remove(GenericClass.E_Zone.Right);
-            buttonRightR.color = white;
-            ChangeActionToWait();
+            if (ActivesZone.Contains(GenericClass.E_Zone.Right))
 
-        }
-        else
-        {
-            ActivesZone.Add(GenericClass.E_Zone.Right);
-            buttonRightR.color = green;
-            ChangeActionToAttack();
+            {
+                ActivesZone.Remove(GenericClass.E_Zone.Right);
+                buttonRightR.color = white;
+                ChangeActionToWait();
+
+            }
+            else
+            {
+                ActivesZone.Add(GenericClass.E_Zone.Right);
+                buttonRightR.color = green;
+                ChangeActionToAttack();
+            }
         }
         //ChangeActivity();
     }
