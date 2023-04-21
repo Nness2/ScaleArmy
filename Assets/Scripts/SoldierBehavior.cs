@@ -7,7 +7,6 @@ public class SoldierBehavior : MonoBehaviour
     private GameObject Character;
     private Transform player;
     private ArmyManager army_Script;
-    public float speed = 5.0f;
     public float followDistance = 3.0f;
     public float smoothTime = 0.3f;
     public GameObject Totem;
@@ -24,41 +23,58 @@ public class SoldierBehavior : MonoBehaviour
     private Statistique currentTargetStatistique;    // Référence au PNJ cible actuel
     public string targetTag = "Enemy"; // Tag du PNJ cible
 
-    public float DetectDistance = 5.0f; // Distance d'attaque de l'ennemi
-    public float attackDistance = 0.5f; // Distance d'attaque de l'ennemi
-    public int _damage = 15;
     private bool isAttacking = false;    // Indique si l'ennemi est en train d'attaquer
 
     public bool SelfIdle;
+    public bool FlagSelfIdle;
 
     public GenericClass.E_Zone _zoneAttribute = GenericClass.E_Zone.Back;
 
-    public float attackSpeed = 1;
-
+    private Statistique Stat_Script;
+    private AnimationManager Anim_Script;
 
     private void Start()
     {
+        Anim_Script = GetComponent<AnimationManager>();
+        Stat_Script = GetComponent<Statistique>();
+
         Character = GameObject.FindGameObjectWithTag("LocalPlayer");
         player = Character.transform;
         army_Script = Character.GetComponent<ArmyManager>();
         //_actionState = GenericClass.E_Action.Follow;
         SelfIdle = false;
     }
+
+    private void FixedUpdate()
+    {
+        if (SelfIdle && SelfIdle != FlagSelfIdle)
+        {
+            FlagSelfIdle = SelfIdle;
+            Anim_Script._animator.SetInteger("State", (int)GenericClass.E_MonsterAnimState.Idle);
+        }
+
+        else if (!SelfIdle && SelfIdle != FlagSelfIdle)
+        {
+            FlagSelfIdle = SelfIdle;
+            Anim_Script._animator.SetInteger("State", (int)GenericClass.E_MonsterAnimState.Run);
+
+        }
+    }
+
+
+
     private void Update()
     {
-        float distance = 0;
+        float distance;
         switch (_actionState)
         {
             case GenericClass.E_Action.Wait:
-                #region Attack
-
-                // Si on n'a pas de cible actuelle et qu'on n'est pas déjà en train d'attaquer
+                #region Wait
+                // Si on n'a pas de cible actuelle on trouve la plus proche et on vérrifi qu'elle est à porté de detection
                 if (currentTarget == null)
                 {
-
-                    // Trouve le PNJ le plus proche
-
-
+                    #region Trouve le PNJ le plus proche et le met dans currentTarget
+                    
                     targets = GameObject.FindGameObjectsWithTag(targetTag);
                     float minDistance = Mathf.Infinity;
                     foreach (GameObject target in targets)
@@ -66,7 +82,7 @@ public class SoldierBehavior : MonoBehaviour
                         distance = Vector3.Distance(target.transform.position, transform.position);
                         if (distance < minDistance)
                         {
-                            if (distance < DetectDistance)
+                            if (distance < Stat_Script.detectDistance)
                             {
                                 currentTarget = target;
                                 currentTargetStatistique = currentTarget.GetComponent<Statistique>();
@@ -75,37 +91,40 @@ public class SoldierBehavior : MonoBehaviour
 
                         }
                     }
+                    #endregion
                 }
 
                 // Si on a une cible actuelle
-                if (currentTarget != null)
+                else if (currentTarget != null)
                 {
-
-
+                    #region Si on a un target on lui fonce dessus, et à distance d'attaque on attaque
+                    
                     // Calcule la distance entre l'ennemi et la cible
                     distance = Vector3.Distance(currentTarget.transform.position, transform.position);
                     // Si la cible est à portée d'attaque
-                    if (distance >= attackDistance)
+                    if (distance >= Stat_Script.attackDistance)
                     {
-                        transform.position = Vector3.MoveTowards(transform.position, currentTarget.transform.position, speed * Time.deltaTime);
+                        transform.position = Vector3.MoveTowards(transform.position, currentTarget.transform.position, Stat_Script.speed * Time.deltaTime);
                     }
-                    if (distance < attackDistance && !isAttacking)
+                    //Sinon
+                    else
                     {
-                        if (currentTarget.transform.tag == "MyMonster")
+                        SelfIdle = true;
+                        if (!isAttacking)
                         {
-                            currentTarget = null;
-                        }
-                        else
-                        {
-                            isAttacking = true; // set your bool to true
-
-                            StartCoroutine(ResetBoolAfterDelay());
-
-                            currentTargetStatistique.TakeDamage(_damage);
+                            if (currentTarget.transform.tag == "MyMonster")
+                            {
+                                currentTarget = null;
+                            }
+                            else
+                            {
+                                isAttacking = true;
+                                StartCoroutine(ResetBoolAfterDelay());
+                                currentTargetStatistique.TakeDamage(Mathf.RoundToInt(10 + Stat_Script.damage * GetComponent<Statistique>()._healthbar.fillAmount));
+                            }
                         }
                     }
-
-
+                    #endregion
                 }
                 #endregion
                 break;
@@ -126,12 +145,6 @@ public class SoldierBehavior : MonoBehaviour
                     case GenericClass.E_Zone.Totem:
                         player = Totem.transform;
                         break;
-                    /*case GenericClass.E_Zone.FrontLeft:
-                        player = army_Script.ZonesFrontLeft.transform;
-                        break;
-                    case GenericClass.E_Zone.FrontRight:
-                        player = Totem.transform;
-                        break;*/
 
                 }
                 // Calcule la distance entre le PNJ et le joueur
@@ -143,12 +156,10 @@ public class SoldierBehavior : MonoBehaviour
                     Vector3 direction = player.position - transform.position;
                     direction.y = 0f;
                     direction.Normalize();
-
                     // Calcule la nouvelle position du PNJ
                     Vector3 targetPosition = player.position - direction * followDistance;
-
                     // Déplace le PNJ vers la nouvelle position de manière fluide
-                    transform.position = Vector3.SmoothDamp(transform.position, targetPosition, ref velocity, smoothTime, speed);
+                    transform.position = Vector3.SmoothDamp(transform.position, targetPosition, ref velocity, smoothTime, Stat_Script.speed);
                     // Oriente le PNJ dans la direction de déplacement
                     if (direction != Vector3.zero)
                     {
@@ -161,7 +172,6 @@ public class SoldierBehavior : MonoBehaviour
                 }
                 #endregion
                 break;
-
             case GenericClass.E_Action.Attack:
                 #region Attack
 
@@ -183,14 +193,8 @@ public class SoldierBehavior : MonoBehaviour
                         case GenericClass.E_Zone.Totem:
                             player = Totem.transform;
                             break;
-                        /*case GenericClass.E_Zone.FrontLeft:
-                            player = army_Script.ZonesFrontLeft.transform;
-                            break;
-                        case GenericClass.E_Zone.FrontRight:
-                            player = army_Script.ZonesFrontRight.transform;
-                            break;*/
-
                     }
+
                     // Calcule la distance entre le PNJ et le joueur
                     distance = Vector3.Distance(player.position, transform.position);
                     // Si la distance est supérieure à la distance de suivi souhaitée
@@ -200,12 +204,10 @@ public class SoldierBehavior : MonoBehaviour
                         Vector3 direction = player.position - transform.position;
                         direction.y = 0f;
                         direction.Normalize();
-
                         // Calcule la nouvelle position du PNJ
                         Vector3 targetPosition = player.position - direction * followDistance;
-
                         // Déplace le PNJ vers la nouvelle position de manière fluide
-                        transform.position = Vector3.SmoothDamp(transform.position, targetPosition, ref velocity, smoothTime, speed);
+                        transform.position = Vector3.SmoothDamp(transform.position, targetPosition, ref velocity, smoothTime, Stat_Script.speed);
                         // Oriente le PNJ dans la direction de déplacement
                         if (direction != Vector3.zero)
                         {
@@ -228,7 +230,7 @@ public class SoldierBehavior : MonoBehaviour
                         distance = Vector3.Distance(target.transform.position, transform.position);
                         if (distance < minDistance)
                         {
-                            if (distance < DetectDistance)
+                            if (distance < Stat_Script.detectDistance)
                             {
                                 currentTarget = target;
                                 currentTargetStatistique = currentTarget.GetComponent<Statistique>();
@@ -240,110 +242,127 @@ public class SoldierBehavior : MonoBehaviour
                 }
 
                 // Si on a une cible actuelle
-                if (currentTarget != null)
+                else if (currentTarget != null)
                 {
-
-
+                    #region Si on a un target on lui fonce dessus, et à distance d'attaque on attaque
                     // Calcule la distance entre l'ennemi et la cible
                     distance = Vector3.Distance(currentTarget.transform.position, transform.position);
-                    // Si la cible est à portée d'attaque
-                    if (distance >= attackDistance)
+                    // Si la cible n'est pas à portée d'attaque
+                    if (distance >= Stat_Script.attackDistance)
                     {
-                        transform.position = Vector3.MoveTowards(transform.position, currentTarget.transform.position, speed * Time.deltaTime);
+                        transform.position = Vector3.MoveTowards(transform.position, currentTarget.transform.position, Stat_Script.speed * Time.deltaTime);
+                        Vector3 direction = currentTarget.transform.position - transform.position;
+                        transform.rotation = Quaternion.LookRotation(direction);
                     }
-                    if (distance < attackDistance && !isAttacking)
+                    //Sinon
+                    else
                     {
+                        Vector3 direction = currentTarget.transform.position - transform.position;
+                        transform.rotation = Quaternion.LookRotation(direction);
                         if (currentTarget.transform.tag == "MyMonster")
                         {
                             currentTarget = null;
+                            SetAllIdle(false);
                         }
-                        else
+                        else if (!isAttacking)
                         {
-                            isAttacking = true; // set your bool to true
 
-                            StartCoroutine(ResetBoolAfterDelay());
-
-                            currentTargetStatistique.TakeDamage(_damage);
+                            if (currentTarget.transform.tag == "Enemy")
+                            {
+                                SelfIdle = true;
+                                isAttacking = true;
+                                StartCoroutine(ResetBoolAfterDelay());
+                                currentTargetStatistique.TakeDamage(Mathf.RoundToInt(10 + Stat_Script.damage * GetComponent<Statistique>()._healthbar.fillAmount));
+                            }
                         }
                     }
-
-
+                    #endregion
                 }
                 #endregion
                 break;
         }
 
-        if (currentTarget != null)
+        if (Input.GetMouseButtonUp(0))
         {
-            if (currentTarget.transform.tag == "MyMonster" && SelfIdle)
-            {
-                currentTarget = null;
-                SelfIdle = false;
-            }
+            LaunchAssault();
         }
-        LaunchAttack();
     }
 
     IEnumerator ResetBoolAfterDelay()
     {
-        //GetComponent<Rigidbody>().AddForce(((currentTarget.transform.position + new Vector3(0, 0, 0)) - transform.position) * 33);
-        yield return new WaitForSeconds(attackSpeed); // wait for 1 second
+        #region Coroutine d'attaque
+        Anim_Script._animator.SetBool("Attack", true);
+        yield return new WaitForSeconds(Stat_Script.attackSpeed); // wait for 1 second
         isAttacking = false; // set your bool to false
+        Anim_Script._animator.SetBool("Attack", false);
+        #endregion
     }
 
 
     private void OnCollisionStay(Collision collision)
     {
+        #region Quand le monstre est en contact d'un allié Idle il devient Idle
         if (collision.transform.tag == "MyMonster")
         {
             if (collision.transform.gameObject.GetComponent<SoldierBehavior>().SelfIdle == true)
             {
                 if(collision.transform.gameObject.GetComponent<SoldierBehavior>()._zoneAttribute == _zoneAttribute)
                 {
-                    SelfIdle = true;
+                    if(currentTarget == null)
+                        SelfIdle = true;
                 }
             }
         }
-
-        if (collision.transform.tag == "ground")
-        {
-            if (SelfIdle == false)
-            {
-                //GetComponent<Rigidbody>().AddForce(((new Vector3(0, 60, 0))));
-            }
-        }
+        #endregion
     }
     private void OnTriggerStay(Collider other)
     {
+        #region Quand le monstre est en contact de sa zone il devient Idle
+
         if (other.transform.tag == "zone")
         {
             if (other.transform.gameObject.GetComponent<ZoneInfos>().zone == _zoneAttribute)
             {
-                SelfIdle = true;
+                if (currentTarget == null)
+                    SelfIdle = true;
             }
         }
+        #endregion
     }
 
-
-
-    private void LaunchAttack()
+    private void LaunchAssault()
     {
-        if (Input.GetMouseButtonDown(0))
+        #region Quand on clique sur un enemy on lui attribu un target 
+
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        int layerMask3 = 1 << LayerMask.NameToLayer("Monster");  // ignore tous les layers sauf "Zone"
+        RaycastHit hit;
+        if (Physics.Raycast(ray.origin, ray.direction * 100, out hit, layerMask3))
         {
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            int layerMask3 = 1 << LayerMask.NameToLayer("Monster");  // ignore tous les layers sauf "Zone"
-            RaycastHit hit;
-            if (Physics.Raycast(ray.origin, ray.direction * 100, out hit, layerMask3))
+            if (hit.transform.tag == "Enemy")
             {
-                if (hit.transform.tag == "Enemy")
+                if (Character.GetComponent<PlayerController>().ActivesZone.Contains(_zoneAttribute))
                 {
-                    if (Character.GetComponent<PlayerController>().ActivesZone.Contains(_zoneAttribute))
-                    {
-                        currentTarget = hit.transform.gameObject;
-                        currentTargetStatistique = currentTarget.GetComponent<Statistique>();
-                        //GetComponent<Rigidbody>().AddForce(((currentTarget.transform.position + new Vector3(0,60,0)) - transform.position) * 3);
-                    }
+                    currentTarget = hit.transform.gameObject;
+                    currentTargetStatistique = currentTarget.GetComponent<Statistique>(); // on réccupére également ses information
+                    SelfIdle = false;
+                    //GetComponent<Rigidbody>().AddForce(((currentTarget.transform.position + new Vector3(0,60,0)) - transform.position) * 3);
                 }
+            }
+        }
+
+        #endregion
+    }
+
+    private void SetAllIdle(bool isIdle)
+    {
+        targets = GameObject.FindGameObjectsWithTag("MyMonster");
+        foreach (GameObject target in targets)
+        {
+            SoldierBehavior soldier = target.GetComponent<SoldierBehavior>();
+            if (soldier.currentTarget == null && soldier._actionState == GenericClass.E_Action.Attack)
+            {
+                soldier.SelfIdle = isIdle;
             }
         }
     }

@@ -131,9 +131,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _startHealth: 400
-  _health: 0
   _healthbar: {fileID: 1054261058891095166}
   EnemyBar: {r: 0.15294118, g: 1, b: 0.011764706, a: 1}
+  monsterImage: {fileID: 21300000, guid: 173b3ca6c293de4488d7fc5adc7dd58f, type: 3}
+  _health: 200
+  damage: 25
+  speed: 6
+  attackSpeed: 0.8
+  attackDistance: 2
+  detectDistance: 10
 --- !u!114 &3636710107948554053
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -166,7 +172,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 10c94791f1794484d88bd89d41b5baab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 6
   followDistance: 1
   smoothTime: 0.3
   Totem: {fileID: 0}
@@ -174,12 +179,9 @@ MonoBehaviour:
   _actionState: 0
   currentTarget: {fileID: 0}
   targetTag: Enemy
-  DetectDistance: 10
-  attackDistance: 2
-  _damage: 30
   SelfIdle: 0
   _zoneAttribute: 0
-  attackSpeed: 1
+  Stat_Script: {fileID: 0}
 --- !u!114 &2786838102875534599
 MonoBehaviour:
   m_ObjectHideFlags: 0

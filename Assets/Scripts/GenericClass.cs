@@ -24,6 +24,18 @@ public class GenericClass : MonoBehaviour
         //FrontRight,
     }
 
+    [System.Serializable]
+    public enum E_MonsterAnimState
+    {
+        Idle,
+        Run,
+        Floating
+        //FrontLeft,
+        //FrontRight,
+    }
+
+    public 
+
     void Start()
     {
         
@@ -35,5 +47,5 @@ public class GenericClass : MonoBehaviour
         
     }
 
-
+    
 }

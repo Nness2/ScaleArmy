@@ -8,14 +8,26 @@ public class Statistique : MonoBehaviour
 
     public float _startHealth = 100;
     //[HideInInspector]
-    public float _health;
 
     public Image _healthbar;
     public Color EnemyBar;
 
+    public PlayerController plyCtrl_Script;
+
+    //Statistique
+    public Sprite monsterImage;
+    public float _health;
+    public int damage;
+    public float speed;
+    public float attackSpeed;
+    public float attackDistance;
+    public float detectDistance;
+
 
     void Start()
     {
+        plyCtrl_Script = GameObject.FindGameObjectWithTag("LocalPlayer").GetComponent<PlayerController>();
+
         if (_health == 0)
         {
             _health = _startHealth;
@@ -62,5 +74,20 @@ public class Statistique : MonoBehaviour
             GetComponent<EnemyBehavior>().enabled = false;
             GetComponent<SoldierBehavior>().enabled = true;
         }
+    }
+
+    private void OnMouseUp()
+    {
+
+    }
+
+
+    void OnMouseDown()
+    {
+        plyCtrl_Script.CanvasInfos.SetActive(true);
+        plyCtrl_Script.CanvasImage.sprite = monsterImage;
+        plyCtrl_Script.CanvasHealth.text = _health.ToString();
+        plyCtrl_Script.CanvasDamage.text = damage.ToString();
+        plyCtrl_Script.CanvasAtkSpeed.text = attackSpeed.ToString();
     }
 }
