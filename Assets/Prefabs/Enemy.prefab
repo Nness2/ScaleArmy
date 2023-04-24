@@ -504,6 +504,7 @@ GameObject:
   - component: {fileID: 2090839493948358822}
   - component: {fileID: 2390254331422368387}
   - component: {fileID: 6346782169964712332}
+  - component: {fileID: -5715021412004764100}
   m_Layer: 8
   m_Name: Enemy
   m_TagString: Enemy
@@ -520,7 +521,7 @@ Transform:
   m_GameObject: {fileID: 3636710107948554055}
   m_LocalRotation: {x: -0, y: -0.69824195, z: -0, w: 0.71586186}
   m_LocalPosition: {x: -31, y: 0.71, z: 5.786}
-  m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
+  m_LocalScale: {x: 0.4, y: 0.4, z: 0.4}
   m_Children:
   - {fileID: 3798788732647992885}
   - {fileID: 5730824811192682350}
@@ -607,6 +608,7 @@ MonoBehaviour:
   targetTag: MyMonster
   targets: []
   currentTarget: {fileID: 0}
+  FlagTarget: {fileID: 0}
   _damage: 21
   attackSpeed: 1
   _rigidbody: {fileID: 3636710107948554054}
@@ -630,6 +632,7 @@ MonoBehaviour:
   currentTarget: {fileID: 0}
   targetTag: Enemy
   SelfIdle: 0
+  FlagSelfIdle: 0
   _zoneAttribute: 0
 --- !u!114 &2090839493948358822
 MonoBehaviour:
@@ -678,6 +681,22 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _animator: {fileID: 2390254331422368387}
+--- !u!114 &-5715021412004764100
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3636710107948554055}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a7c792f03242a3942b632136f8e2a7b7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  DSpline_Script: {fileID: 0}
+  smoothTime: 0.3
+  CoroutineRun: 0
+  initY: 0
 --- !u!1 &3969434763294042974
 GameObject:
   m_ObjectHideFlags: 0

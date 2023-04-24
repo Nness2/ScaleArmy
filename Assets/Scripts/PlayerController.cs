@@ -34,9 +34,11 @@ public class PlayerController : MonoBehaviour
     public Text CanvasDamage;
     public Text CanvasAtkSpeed;
 
+    private GameObject GM_Script;
+
     void Start()
     {
-
+        GM_Script = GameObject.FindGameObjectWithTag("GameManager");
         ActivesZone.Add(GenericClass.E_Zone.Left);
         ActivesZone.Add(GenericClass.E_Zone.Back);
         ActivesZone.Add(GenericClass.E_Zone.Right);
@@ -55,7 +57,9 @@ public class PlayerController : MonoBehaviour
             transform.rotation = Quaternion.LookRotation(_rigidbody.velocity);
             _animator.SetBool("isRunning", true);
             GameObject[] monsterList = GameObject.FindGameObjectsWithTag("MyMonster");
-            foreach(GameObject soldier in monsterList)
+            GM_Script.GetComponent<DrawSpline>().CleanLineRenderer();
+
+            foreach (GameObject soldier in monsterList)
             {
                 soldier.GetComponent<SoldierBehavior>().SelfIdle = false;
             }
@@ -63,6 +67,7 @@ public class PlayerController : MonoBehaviour
             {
                 ManagerActivate = false;
                 armyManager_Script.ShowZones(false);
+
             }
             if (CamFollow_Script.CamMovable)
             {
@@ -225,4 +230,22 @@ public class PlayerController : MonoBehaviour
         armyManager_Script.ShowZones(ManagerActivate);
     }
 
+
+    public void ButtonFollowLine()
+    {
+        SoldierBehavior[] soldiers = GameObject.FindObjectsOfType<SoldierBehavior>();
+        foreach (SoldierBehavior Soldier in soldiers)
+        {
+            if (GM_Script.GetComponent<DrawSpline>().ZoneChoosed == Soldier._zoneAttribute && Soldier.tag == "MyMonster")
+            {
+                Soldier._actionState = GenericClass.E_Action.LineMove;
+            }
+        }
+    }
+
+    public void ButtonCancelLine()
+    {
+        GM_Script.GetComponent<DrawSpline>().CleanLineRenderer();
+
+    }
 }

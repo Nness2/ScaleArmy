@@ -10,7 +10,8 @@ public class GenericClass : MonoBehaviour
     {
         Attack,
         Follow,
-        Wait
+        Wait,
+        LineMove,
     }
 
     [System.Serializable]

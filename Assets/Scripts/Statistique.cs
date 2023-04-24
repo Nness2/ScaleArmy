@@ -43,7 +43,7 @@ public class Statistique : MonoBehaviour
     {
     }
 
-    public void TakeDamage(int amount)
+    public void TakeDamage(int amount, GenericClass.E_Action KillerAction)
     {
         _health -= amount;
 
@@ -51,6 +51,7 @@ public class Statistique : MonoBehaviour
         if (_health <= 0)
         {
             Die();
+            GetComponent<SoldierBehavior>()._actionState = KillerAction;
         }
     }
 
@@ -89,5 +90,7 @@ public class Statistique : MonoBehaviour
         plyCtrl_Script.CanvasHealth.text = _health.ToString();
         plyCtrl_Script.CanvasDamage.text = damage.ToString();
         plyCtrl_Script.CanvasAtkSpeed.text = attackSpeed.ToString();
+
+
     }
 }

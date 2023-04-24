@@ -98,29 +98,34 @@ public class SoldierBehavior : MonoBehaviour
                 else if (currentTarget != null)
                 {
                     #region Si on a un target on lui fonce dessus, et à distance d'attaque on attaque
-                    
                     // Calcule la distance entre l'ennemi et la cible
                     distance = Vector3.Distance(currentTarget.transform.position, transform.position);
-                    // Si la cible est à portée d'attaque
+                    // Si la cible n'est pas à portée d'attaque
                     if (distance >= Stat_Script.attackDistance)
                     {
                         transform.position = Vector3.MoveTowards(transform.position, currentTarget.transform.position, Stat_Script.speed * Time.deltaTime);
+                        Vector3 direction = currentTarget.transform.position - transform.position;
+                        transform.rotation = Quaternion.LookRotation(direction);
                     }
                     //Sinon
                     else
                     {
-                        SelfIdle = true;
-                        if (!isAttacking)
+                        Vector3 direction = currentTarget.transform.position - transform.position;
+                        transform.rotation = Quaternion.LookRotation(direction);
+                        if (currentTarget.transform.tag == "MyMonster")
                         {
-                            if (currentTarget.transform.tag == "MyMonster")
+                            currentTarget = null;
+                            SetAllIdle(false);
+                        }
+                        else if (!isAttacking)
+                        {
+
+                            if (currentTarget.transform.tag == "Enemy")
                             {
-                                currentTarget = null;
-                            }
-                            else
-                            {
+                                SelfIdle = true;
                                 isAttacking = true;
                                 StartCoroutine(ResetBoolAfterDelay());
-                                currentTargetStatistique.TakeDamage(Mathf.RoundToInt(10 + Stat_Script.damage * GetComponent<Statistique>()._healthbar.fillAmount));
+                                currentTargetStatistique.TakeDamage(Mathf.RoundToInt(10 + Stat_Script.damage * GetComponent<Statistique>()._healthbar.fillAmount), _actionState);
                             }
                         }
                     }
@@ -272,7 +277,7 @@ public class SoldierBehavior : MonoBehaviour
                                 SelfIdle = true;
                                 isAttacking = true;
                                 StartCoroutine(ResetBoolAfterDelay());
-                                currentTargetStatistique.TakeDamage(Mathf.RoundToInt(10 + Stat_Script.damage * GetComponent<Statistique>()._healthbar.fillAmount));
+                                currentTargetStatistique.TakeDamage(Mathf.RoundToInt(10 + Stat_Script.damage * GetComponent<Statistique>()._healthbar.fillAmount), _actionState);
                             }
                         }
                     }
@@ -366,4 +371,6 @@ public class SoldierBehavior : MonoBehaviour
             }
         }
     }
+
+
 }

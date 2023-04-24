@@ -86,7 +86,7 @@ public class EnemyBehavior : MonoBehaviour
 
                 StartCoroutine(ResetBoolAfterDelay());
                 transform.rotation = Quaternion.LookRotation(currentTarget.transform.position - transform.position);
-                currentTargetStatistique.TakeDamage(Mathf.RoundToInt(10 + _damage * GetComponent<Statistique>()._healthbar.fillAmount));
+                currentTargetStatistique.TakeDamage(Mathf.RoundToInt(10 + _damage * GetComponent<Statistique>()._healthbar.fillAmount), GenericClass.E_Action.Wait);
 
             }
         }

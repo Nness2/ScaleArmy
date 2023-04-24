@@ -12,6 +12,7 @@ TagManager:
   - Enemy
   - zone
   - ground
+  - GameManager
   layers:
   - Default
   - TransparentFX
