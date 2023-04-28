@@ -11,7 +11,6 @@ public class GenericClass : MonoBehaviour
         Attack,
         Follow,
         Wait,
-        LineMove,
     }
 
     [System.Serializable]
@@ -20,6 +19,7 @@ public class GenericClass : MonoBehaviour
         Back,
         Left,
         Right,
+        Line,
         Totem,
         //FrontLeft,
         //FrontRight,

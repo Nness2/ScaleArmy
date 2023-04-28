@@ -23,6 +23,10 @@ public class Statistique : MonoBehaviour
     public float attackDistance;
     public float detectDistance;
 
+    //ElementForGameOver
+    public GameObject UIEndPopup;
+    public GameObject ButtonPanel;
+    public GameObject UIJoyStick;
 
     void Start()
     {
@@ -48,10 +52,25 @@ public class Statistique : MonoBehaviour
         _health -= amount;
 
         _healthbar.fillAmount = _health / _startHealth;
-        if (_health <= 0)
+
+        if (transform.tag == "MyMonster" || transform.tag == "Enemy")
         {
-            Die();
-            GetComponent<SoldierBehavior>()._actionState = KillerAction;
+            if (_health <= 0)
+            {
+                Die();
+                GetComponent<SoldierBehavior>()._actionState = KillerAction;
+            }
+        }
+
+
+        if (transform.tag == "LocalPlayer")
+        {
+            if (_health <= 0)
+            {
+                UIEndPopup.SetActive(true);
+                ButtonPanel.SetActive(false);
+                UIJoyStick.SetActive(false);
+            }
         }
     }
 

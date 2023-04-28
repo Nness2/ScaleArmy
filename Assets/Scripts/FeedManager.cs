@@ -62,10 +62,12 @@ public class FeedManager : MonoBehaviour
                             {
                                 GetComponent<SoldierBehavior>().Totem = hit2.collider.gameObject;
                             }
+                            hit2.collider.gameObject.GetComponent<MeshRenderer>().material = armyManager_Script.GreenZone;
                         }
                         else
                         {
                             newZone = GetComponent<SoldierBehavior>()._zoneAttribute;
+                            armyManager_Script.ResetAllZone();
                         }
                     }
                     #endregion
@@ -94,6 +96,7 @@ public class FeedManager : MonoBehaviour
                 {
                     GetComponent<SoldierBehavior>()._zoneAttribute = newZone;
                     GetComponent<SoldierBehavior>().enabled = true;
+
                 }
             }
             //plyrControl_Script.ChangeActivity(); //ça update pas
@@ -127,6 +130,7 @@ public class FeedManager : MonoBehaviour
                 //armyManager_Script.ShowZones(false);
                 GetComponent<SoldierBehavior>().SelfIdle = false;
                 plyrControl_Script.CircleLimite.SetActive(false);
+                armyManager_Script.ResetAllZone();
 
 
                 if (plyrControl_Script.ManagerActivate)// feedactivate 

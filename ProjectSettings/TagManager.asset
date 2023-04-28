@@ -13,6 +13,7 @@ TagManager:
   - zone
   - ground
   - GameManager
+  - TaskTotem
   layers:
   - Default
   - TransparentFX

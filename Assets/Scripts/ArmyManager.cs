@@ -7,6 +7,10 @@ public class ArmyManager : MonoBehaviour
     public GameObject ZonesBackMiddle;
     public GameObject ZonesLeft;
     public GameObject ZonesRight;
+
+
+    public Material GreenZone;
+    public Material WhiteZone;
     //public GameObject ZonesFrontLeft;
     //public GameObject ZonesFrontRight;
 
@@ -39,5 +43,13 @@ public class ArmyManager : MonoBehaviour
             //ZonesLeft.GetComponent<MeshRenderer>().enabled = false;
             //ZonesRight.GetComponent<MeshRenderer>().enabled = false;
         }
+    }
+
+    //Make AllAZone white to prepare the next green one
+    public void ResetAllZone()
+    {
+        ZonesBackMiddle.GetComponent<MeshRenderer>().material = WhiteZone;
+        ZonesLeft.GetComponent<MeshRenderer>().material = WhiteZone;
+        ZonesRight.GetComponent<MeshRenderer>().material = WhiteZone;
     }
 }

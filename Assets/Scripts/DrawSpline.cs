@@ -13,10 +13,11 @@ public class DrawSpline : MonoBehaviour
     public GenericClass.E_Zone ZoneChoosed;
     public GameObject UiPannel;
     private PlayerController _player;
-
+    public bool isMooving;
 
     private void Awake()
     {
+        isMooving = false;
         _player = GameObject.FindGameObjectWithTag("LocalPlayer").GetComponent<PlayerController>();
         lineRenderer = GetComponent<LineRenderer>();
         readyToDraw = false;
@@ -36,7 +37,7 @@ public class DrawSpline : MonoBehaviour
 
                 if (Physics.Raycast(ray, out hitInfo, 100, layerMask))
                 {
-                    if (DistanceToLastPoint(hitInfo.point) > 1f)
+                    if (DistanceToLastPoint(hitInfo.point) >0.1f)
                     {
                         Vector3 pos = new Vector3(hitInfo.point.x, 0.5f, hitInfo.point.z);
                         points.Add(pos);
@@ -52,7 +53,7 @@ public class DrawSpline : MonoBehaviour
 
         else if (Input.GetMouseButtonUp(0))
         {
-            OnNewPathCreated(points);
+            //OnNewPathCreated(points);
 
         }
 

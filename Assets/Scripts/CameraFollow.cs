@@ -19,12 +19,19 @@ public class CameraFollow : MonoBehaviour
     public GameObject CanvasMask;
     public PlayerController plyrControl_Script;
 
+    //Camera Zoom
+    //public float maxZoom = 5f;
+    //public float minZoom = 1f;
+    public float zoomSpeed = 10f;
+
+    //Camera Zoom
+    public float maxZoomFOW = 60;
+    public float minZoomFOW = 40;
 
     private void Start()
     {
         CamMovable = false;
         plyrControl_Script = GameObject.FindGameObjectWithTag("LocalPlayer").GetComponent<PlayerController>();
-
     }
 
     private void LateUpdate()
@@ -43,7 +50,28 @@ public class CameraFollow : MonoBehaviour
 
     private void Update()
     {
+        /*
+        #region ZoomTouchScreen
+        if (Input.touchCount == 2)
+        {
+            Touch touch1 = Input.GetTouch(0);
+            Touch touch2 = Input.GetTouch(1);
 
+            Vector2 touch1PrevPos = touch1.position - touch1.deltaPosition;
+            Vector2 touch2PrevPos = touch2.position - touch2.deltaPosition;
+
+            float prevTouchDeltaMag = (touch1PrevPos - touch2PrevPos).magnitude;
+            float touchDeltaMag = (touch1.position - touch2.position).magnitude;
+
+            float deltaMagnitudeDiff = prevTouchDeltaMag - touchDeltaMag;
+
+            transform.GetComponent<Camera>().orthographicSize += deltaMagnitudeDiff * zoomSpeed;
+
+            //transform.GetComponent<Camera>().orthographicSize = Mathf.Clamp(transform.GetComponent<Camera>().orthographicSize, minZoom, maxZoom);
+        }
+
+        #endregion
+        */
     }
 
 
@@ -86,4 +114,24 @@ public class CameraFollow : MonoBehaviour
             lastMousePosition = Input.mousePosition;
         }
     }
+
+    public void Zoom(bool zoomIn)
+    {
+        StartCoroutine(ZoomCoroutine(zoomIn));
+    }
+
+
+    private IEnumerator ZoomCoroutine(bool zoomIn)
+    {
+        float targetZoom = zoomIn ? minZoomFOW : maxZoomFOW;
+        float startZoom = Camera.main.fieldOfView;
+        float t = 0f;
+        while (t < 1f)
+        {
+            t += Time.deltaTime * zoomSpeed;
+            Camera.main.fieldOfView = Mathf.Lerp(startZoom, targetZoom, t);
+            yield return null;
+        }
+    }
+
 }

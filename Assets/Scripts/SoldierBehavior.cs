@@ -5,11 +5,12 @@ using UnityEngine;
 public class SoldierBehavior : MonoBehaviour
 {
     private GameObject Character;
-    private Transform player;
+    public Transform player;
     private ArmyManager army_Script;
     public float followDistance = 3.0f;
     public float smoothTime = 0.3f;
     public GameObject Totem;
+    public DrawSpline DSpline_Script;
 
     private Vector3 velocity = Vector3.zero;
 
@@ -35,6 +36,8 @@ public class SoldierBehavior : MonoBehaviour
 
     private void Start()
     {
+        DSpline_Script = GameObject.FindGameObjectWithTag("GameManager").GetComponent<DrawSpline>();
+
         Anim_Script = GetComponent<AnimationManager>();
         Stat_Script = GetComponent<Statistique>();
 
@@ -195,6 +198,9 @@ public class SoldierBehavior : MonoBehaviour
                         case GenericClass.E_Zone.Right:
                             player = army_Script.ZonesRight.transform;
                             break;
+                        case GenericClass.E_Zone.Line:
+                            player = Character.GetComponent<PlayerController>().LineFollower.transform;
+                            break;
                         case GenericClass.E_Zone.Totem:
                             player = Totem.transform;
                             break;
@@ -221,7 +227,14 @@ public class SoldierBehavior : MonoBehaviour
                     }
                     else
                     {
-                        SelfIdle = true;
+                        if (_zoneAttribute == GenericClass.E_Zone.Line)
+                        {
+
+                        }
+                        else
+                        {
+                            SelfIdle = true;
+                        }
                     }
                     #endregion
 
@@ -355,7 +368,6 @@ public class SoldierBehavior : MonoBehaviour
                 }
             }
         }
-
         #endregion
     }
 
@@ -373,4 +385,21 @@ public class SoldierBehavior : MonoBehaviour
     }
 
 
+    private void OnMouseDown()
+    {
+        DSpline_Script.points.Clear();
+        DSpline_Script.readyToDraw = true;
+        DSpline_Script.ZoneChoosed = GetComponent<SoldierBehavior>()._zoneAttribute;
+        Character.GetComponent<PlayerController>().LineFollower.transform.position = transform.position;
+        if (!Character.GetComponent<PlayerController>().ManagerActivate)
+        {
+            DSpline_Script.UiPannel.SetActive(true);
+        }
+    }
+
+    private void OnMouseUp()
+    {
+        DSpline_Script.readyToDraw = false;
+        //DSpline_Script.ZoneChoosed = GenericClass.E_Zone.Back;
+    }
 }

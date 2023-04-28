@@ -1,9 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 public class EnemyBehavior : MonoBehaviour
 {
+    public PlayerController player;
+
     public float speed = 5.0f;          // Vitesse de déplacement de l'ennemi
     public float attackDistance = 0.5f; // Distance d'attaque de l'ennemi
     public float DetectDistance = 5.0f; // Distance d'attaque de l'ennemi
@@ -23,6 +26,7 @@ public class EnemyBehavior : MonoBehaviour
 
     private void Start()
     {
+        player = GameObject.FindGameObjectWithTag("LocalPlayer").GetComponent<PlayerController>();
         Anim_Script = GetComponent<AnimationManager>();
         FlagTarget = null;
     }
@@ -41,7 +45,10 @@ public class EnemyBehavior : MonoBehaviour
             }
 
             // Trouve le PNJ le plus proche
-            targets = GameObject.FindGameObjectsWithTag(targetTag);
+            GameObject[] Monstertargets = GameObject.FindGameObjectsWithTag(targetTag);
+            GameObject[] Playertarget = GameObject.FindGameObjectsWithTag("LocalPlayer");
+
+            targets = Monstertargets.Concat(Playertarget).ToArray();
 
             foreach (GameObject target in targets)
             {

@@ -36,8 +36,14 @@ public class PlayerController : MonoBehaviour
 
     private GameObject GM_Script;
 
+    public GameObject LineFollower;
+    public DrawSpline DSpline_Script;
+
+
     void Start()
     {
+        DSpline_Script = GameObject.FindGameObjectWithTag("GameManager").GetComponent<DrawSpline>();
+
         GM_Script = GameObject.FindGameObjectWithTag("GameManager");
         ActivesZone.Add(GenericClass.E_Zone.Left);
         ActivesZone.Add(GenericClass.E_Zone.Back);
@@ -67,7 +73,7 @@ public class PlayerController : MonoBehaviour
             {
                 ManagerActivate = false;
                 armyManager_Script.ShowZones(false);
-
+                CamFollow_Script.Zoom(false);
             }
             if (CamFollow_Script.CamMovable)
             {
@@ -228,17 +234,33 @@ public class PlayerController : MonoBehaviour
         ManagerActivate = !ManagerActivate;
         FeedActivate = false;
         armyManager_Script.ShowZones(ManagerActivate);
+        GM_Script.GetComponent<DrawSpline>().CleanLineRenderer();
+
+        if (ManagerActivate)
+        {
+            CamFollow_Script.Zoom(true);
+        }
+        else
+        {
+            CamFollow_Script.Zoom(false);
+        }
     }
 
 
     public void ButtonFollowLine()
     {
         SoldierBehavior[] soldiers = GameObject.FindObjectsOfType<SoldierBehavior>();
+
+        DSpline_Script.OnNewPathCreated(DSpline_Script.points);
+        DSpline_Script.isMooving = true;
+
         foreach (SoldierBehavior Soldier in soldiers)
         {
             if (GM_Script.GetComponent<DrawSpline>().ZoneChoosed == Soldier._zoneAttribute && Soldier.tag == "MyMonster")
             {
-                Soldier._actionState = GenericClass.E_Action.LineMove;
+                Soldier._zoneAttribute = GenericClass.E_Zone.Line;
+                Soldier.SelfIdle = false;
+
             }
         }
     }
@@ -246,6 +268,8 @@ public class PlayerController : MonoBehaviour
     public void ButtonCancelLine()
     {
         GM_Script.GetComponent<DrawSpline>().CleanLineRenderer();
-
     }
+    
 }
+
+
