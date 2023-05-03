@@ -49,15 +49,24 @@ public class EnemyBehavior : MonoBehaviour
             GameObject[] Playertarget = GameObject.FindGameObjectsWithTag("LocalPlayer");
 
             targets = Monstertargets.Concat(Playertarget).ToArray();
-
+            float minDistance = Mathf.Infinity;
+            GameObject Nearest = null;
             foreach (GameObject target in targets)
             {
                 float distance = Vector3.Distance(target.transform.position, transform.position);
                 if (distance < DetectDistance)
                 {
-                    currentTarget = target;
-                    currentTargetStatistique = currentTarget.GetComponent<Statistique>();
+                    if(distance < minDistance)
+                    {
+                        minDistance = distance;
+                        Nearest = target;
+                    }
                 }
+            }
+            if(Nearest != null)
+            {
+                currentTarget = Nearest;
+                currentTargetStatistique = currentTarget.GetComponent<Statistique>();
             }
         }
 

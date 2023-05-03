@@ -39,9 +39,13 @@ public class PlayerController : MonoBehaviour
     public GameObject LineFollower;
     public DrawSpline DSpline_Script;
 
+    public GameObject AssaultButton;
+
+    public GameObject LastEnemyClicked;
 
     void Start()
     {
+        LastEnemyClicked = null;
         DSpline_Script = GameObject.FindGameObjectWithTag("GameManager").GetComponent<DrawSpline>();
 
         GM_Script = GameObject.FindGameObjectWithTag("GameManager");
@@ -88,6 +92,11 @@ public class PlayerController : MonoBehaviour
         else
         {
             _animator.SetBool("isRunning", false);
+        }
+
+        if (Input.GetMouseButtonUp(0))
+        {
+            DetectEnemyOnClick();
         }
     }
 
@@ -269,7 +278,38 @@ public class PlayerController : MonoBehaviour
     {
         GM_Script.GetComponent<DrawSpline>().CleanLineRenderer();
     }
-    
+
+
+    //Permet de garder le dernier enemy sur lequel le joueur à cliquer
+    private void DetectEnemyOnClick()
+    {
+        #region Quand on clique sur un enemy on lui attribu un target 
+
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        int layerMask3 = 1 << LayerMask.NameToLayer("Monster");  // ignore tous les layers sauf "Zone"
+        RaycastHit hit;
+        if (Physics.Raycast(ray.origin, ray.direction * 100, out hit, layerMask3))
+        {
+            if (hit.transform.tag == "Enemy")
+            {
+                LastEnemyClicked = hit.transform.gameObject;
+                AssaultButton.SetActive(true);
+            }
+        }
+        #endregion
+    }
+
+    //Permet d'envoyer à l'attaque nos monstres sur le dernier enemy sur lequel on a cliqué 
+    public void LaunchAssault()
+    {
+        SoldierBehavior[] soldiers = GameObject.FindObjectsOfType<SoldierBehavior>();
+        foreach (SoldierBehavior Soldier in soldiers)
+        {
+            Soldier.currentTarget = LastEnemyClicked.transform.gameObject;
+            Soldier.currentTargetStatistique = Soldier.currentTarget.GetComponent<Statistique>(); // on réccupére également ses information
+            Soldier.SelfIdle = false;
+        }
+    }
 }
 
 

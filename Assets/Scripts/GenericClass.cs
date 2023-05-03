@@ -30,7 +30,8 @@ public class GenericClass : MonoBehaviour
     {
         Idle,
         Run,
-        Floating
+        Floating,
+        Eat,
         //FrontLeft,
         //FrontRight,
     }

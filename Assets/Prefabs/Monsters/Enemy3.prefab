@@ -133,13 +133,17 @@ MonoBehaviour:
   _startHealth: 400
   _healthbar: {fileID: 1054261058891095166}
   EnemyBar: {r: 0.15294118, g: 1, b: 0.011764706, a: 1}
+  plyCtrl_Script: {fileID: 0}
   monsterImage: {fileID: 21300000, guid: 173b3ca6c293de4488d7fc5adc7dd58f, type: 3}
-  _health: 200
-  damage: 25
+  _health: 400
+  damage: 19
   speed: 6
   attackSpeed: 0.8
   attackDistance: 2
   detectDistance: 10
+  UIEndPopup: {fileID: 0}
+  ButtonPanel: {fileID: 0}
+  UIJoyStick: {fileID: 0}
 --- !u!114 &3636710107948554053
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -152,14 +156,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 38f37553aaf90414e86080dce923186e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  player: {fileID: 0}
   speed: 6
   attackDistance: 2
   DetectDistance: 10
   targetTag: MyMonster
   targets: []
   currentTarget: {fileID: 0}
+  FlagTarget: {fileID: 0}
   _damage: 30
   attackSpeed: 1
+  _rigidbody: {fileID: 0}
 --- !u!114 &3636710107948554063
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -172,16 +179,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 10c94791f1794484d88bd89d41b5baab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  player: {fileID: 0}
   followDistance: 1
   smoothTime: 0.3
   Totem: {fileID: 0}
+  DSpline_Script: {fileID: 0}
   _rigidbody: {fileID: 0}
   _actionState: 0
   currentTarget: {fileID: 0}
+  currentTargetStatistique: {fileID: 0}
   targetTag: Enemy
   SelfIdle: 0
+  FlagSelfIdle: 0
   _zoneAttribute: 0
-  Stat_Script: {fileID: 0}
 --- !u!114 &2786838102875534599
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -197,6 +207,7 @@ MonoBehaviour:
   newZone: 0
   armyManager_Script: {fileID: 0}
   plyrControl_Script: {fileID: 0}
+  ZoneSelect: {fileID: 0}
 --- !u!1001 &4562531098532100158
 PrefabInstance:
   m_ObjectHideFlags: 0

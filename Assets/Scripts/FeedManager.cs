@@ -9,7 +9,7 @@ public class FeedManager : MonoBehaviour
     private GameObject Tofeed;
     public ArmyManager armyManager_Script;
     public PlayerController plyrControl_Script;
-
+    public GameObject ZoneSelect;
 
 
     void Start()
@@ -33,45 +33,18 @@ public class FeedManager : MonoBehaviour
 
                     //int groundLayer = LayerMask.NameToLayer("Default");
                     #region permet de surelever le monster quand on clique dessus
-                    int layerMask = 1 << LayerMask.NameToLayer("CircleLimite"); // ignore tous les layers sauf "Ground"
+                    int layerMask = 1 << LayerMask.NameToLayer("Ground"); // ignore tous les layers sauf "Ground"
 
                     Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
                     //Debug.DrawRay(ray.origin, ray.direction * 100, Color.green, 0.01f);
                     RaycastHit hit;
                     if (Physics.Raycast(ray, out hit, 100, layerMask))
                     {
-                        transform.position = new Vector3(hit.point.x, 3, hit.point.z);
+                        transform.position = new Vector3(hit.point.x, 2, hit.point.z);
                         GetComponent<AnimationManager>()._animator.SetInteger("State", (int)GenericClass.E_MonsterAnimState.Floating);
                         //Debug.Log(hit.transform.name);
                     }
                     #endregion
-
-                    if (plyrControl_Script.ManagerActivate)
-                    {
-
-                        #region permet déplacer un monster dans un zone différente
-                        int layerMask2 = 1 << LayerMask.NameToLayer("Zone");
-                        Vector3 ray2 = transform.position;
-                        //Debug.DrawRay(ray.origin, ray.direction * 100, Color.green, 0.01f);
-                        RaycastHit hit2;
-                        if (Physics.Raycast(ray2, -transform.up * 100, out hit2, 100, layerMask2))
-                        {
-                            newZone = hit2.collider.gameObject.GetComponent<ZoneInfos>().zone;
-
-                            if (hit2.collider.gameObject.GetComponent<ZoneInfos>().zone == GenericClass.E_Zone.Totem)
-                            {
-                                GetComponent<SoldierBehavior>().Totem = hit2.collider.gameObject;
-                            }
-                            hit2.collider.gameObject.GetComponent<MeshRenderer>().material = armyManager_Script.GreenZone;
-                        }
-                        else
-                        {
-                            newZone = GetComponent<SoldierBehavior>()._zoneAttribute;
-                            armyManager_Script.ResetAllZone();
-                        }
-                    }
-                    #endregion
-
 
                     if (plyrControl_Script.ManagerActivate) // feedactivate 
                     {
@@ -84,16 +57,58 @@ public class FeedManager : MonoBehaviour
                         {
                             //transform.position = new Vector3(hit.point.x, 3, hit.point.z);
                             Tofeed = hit3.transform.gameObject;
+                            Tofeed.GetComponent<AnimationManager>()._animator.SetInteger("State", (int)GenericClass.E_MonsterAnimState.Eat);
+                            if(ZoneSelect != null)
+                            {
+                                ZoneSelect.GetComponent<MeshRenderer>().material = armyManager_Script.WhiteZone;
+                            }
                         }
                         else
                         {
+                            if (Tofeed != null)
+                                Tofeed.GetComponent<AnimationManager>()._animator.SetInteger("State", (int)GenericClass.E_MonsterAnimState.Idle);
                             Tofeed = null;
                         }
                         #endregion
                     }
+
+
+                    if (plyrControl_Script.ManagerActivate)
+                    {
+                        if(Tofeed == null)
+                        {
+                            #region permet déplacer un monster dans un zone différente
+                            int layerMask2 = 1 << LayerMask.NameToLayer("Zone");
+                            Vector3 ray2 = transform.position;
+                            //Debug.DrawRay(ray.origin, ray.direction * 100, Color.green, 0.01f);
+                            RaycastHit hit2;
+                            if (Physics.Raycast(ray2, -transform.up * 100, out hit2, 100, layerMask2))
+                            {
+                                newZone = hit2.collider.gameObject.GetComponent<ZoneInfos>().zone;
+                                ZoneSelect = hit2.collider.gameObject;
+                                if (hit2.collider.gameObject.GetComponent<ZoneInfos>().zone == GenericClass.E_Zone.Totem)
+                                {
+                                    GetComponent<SoldierBehavior>().Totem = hit2.collider.gameObject;
+                                }
+                                hit2.collider.gameObject.GetComponent<MeshRenderer>().material = armyManager_Script.GreenZone;
+                            }
+                            else
+                            {
+                                newZone = GetComponent<SoldierBehavior>()._zoneAttribute;
+                                armyManager_Script.ResetAllZone();
+                            }
+                            #endregion
+                        }
+                    }
+
+
                 }
                 else
                 {
+                    if (Tofeed != null)
+                    {
+                        newZone = GetComponent<SoldierBehavior>()._zoneAttribute;
+                    }
                     GetComponent<SoldierBehavior>()._zoneAttribute = newZone;
                     GetComponent<SoldierBehavior>().enabled = true;
 
@@ -151,6 +166,8 @@ public class FeedManager : MonoBehaviour
                             }
                             Destroy(transform.gameObject, 0.1f);
                         }
+                        Tofeed.GetComponent<AnimationManager>()._animator.SetInteger("State", (int)GenericClass.E_MonsterAnimState.Idle);
+
                     }
                 }
             }

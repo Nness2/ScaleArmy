@@ -42,20 +42,26 @@ public class TaskManager : MonoBehaviour
         #endregion
 
         #region DetectProximityTask
+        //Si Le button de tache n'est pas activé
         if (TaskButton.activeSelf == false)
         {
+            //Si on a pas encore fait apparaitre le button
             if (TaskButton.activeSelf != taskButtonFlag)
             {
+                //Vérifie si une des taches est à proximité
                 foreach (GameObject obj in AllTaskTotem)
                 {
                     distance = Vector3.Distance(Character.transform.position, obj.transform.position);
                     if (distance < 2f)
                     {
+                        //Si on n'a pas encore fait la tache, le bouton s'affiche
                         if(obj.GetComponent<TaskBase>()._done != true)
-                        taskButtonFlag = TaskButton.activeSelf;
-                        TaskButton.SetActive(true);
-                        ActifTaskTotem = obj;
-                        break;
+                        {
+                            taskButtonFlag = TaskButton.activeSelf;
+                            TaskButton.SetActive(true);
+                            ActifTaskTotem = obj;
+                            break;
+                        }
                     }
                 }
             }
@@ -88,7 +94,6 @@ public class TaskManager : MonoBehaviour
 
     public void OpenActifTaskCanvas()
     {
-        Debug.Log(ActifTaskTotem.GetComponent<TaskBase>().TaskCanvas.gameObject.name);
         ActifTaskTotem.GetComponent<TaskBase>().TaskCanvas.SetActive(true);
     }
 

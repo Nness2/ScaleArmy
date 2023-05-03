@@ -415,10 +415,10 @@ RectTransform:
   m_Father: {fileID: 7774847872801195732}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0.19100007}
-  m_SizeDelta: {x: 0, y: 0.382}
+  m_AnchorMin: {x: 0.5, y: 0}
+  m_AnchorMax: {x: 0.5, y: 0}
+  m_AnchoredPosition: {x: 0, y: 19.5928}
+  m_SizeDelta: {x: 700, y: 39.1866}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &9022910129693175869
 CanvasRenderer:
@@ -441,7 +441,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.011764705, g: 0.47797957, b: 1, a: 1}
+  m_Color: {r: 0.15294118, g: 1, b: 0.011764706, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -493,8 +493,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0.190979}
-  m_SizeDelta: {x: -1.3999999, y: 0.382}
+  m_AnchoredPosition: {x: 11.420044, y: 0.190979}
+  m_SizeDelta: {x: -161.78006, y: 0.382}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &6904755105499290967
 CanvasRenderer:
@@ -1817,8 +1817,8 @@ MonoBehaviour:
   ZonesBackMiddle: {fileID: 5111375013439738458}
   ZonesLeft: {fileID: 5624500378661685958}
   ZonesRight: {fileID: 3859196920307159025}
-  GreenZone: {fileID: 0}
-  WhiteZone: {fileID: 0}
+  GreenZone: {fileID: 2100000, guid: 1591017999b05b64b822e0be0e433b7c, type: 2}
+  WhiteZone: {fileID: 2100000, guid: c81040a5b88f62748b9b64996199432b, type: 2}
 --- !u!114 &733564617
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1844,17 +1844,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 717e60c0908205b43a819dace7e43c1f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _startHealth: 100
+  _startHealth: 300
   _healthbar: {fileID: 4381165588635913911}
   EnemyBar: {r: 0, g: 0, b: 0, a: 0}
   plyCtrl_Script: {fileID: 0}
   monsterImage: {fileID: 21300000, guid: 05f355a42b9af8a43961c258f8c871f4, type: 3}
-  _health: 100
+  _health: 300
   damage: 1
   speed: 0
   attackSpeed: 0
   attackDistance: 0
   detectDistance: 0
+  UIEndPopup: {fileID: 0}
+  ButtonPanel: {fileID: 0}
+  UIJoyStick: {fileID: 0}
 --- !u!1 &3879452166236261759
 GameObject:
   m_ObjectHideFlags: 0
@@ -3319,7 +3322,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -0.615, y: 0.28993}
+  m_AnchoredPosition: {x: -0.615, y: 0.2899475}
   m_SizeDelta: {x: 2.87, y: 2.8997}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &8359511127351261806

@@ -109,7 +109,5 @@ public class Statistique : MonoBehaviour
         plyCtrl_Script.CanvasHealth.text = _health.ToString();
         plyCtrl_Script.CanvasDamage.text = damage.ToString();
         plyCtrl_Script.CanvasAtkSpeed.text = attackSpeed.ToString();
-
-
     }
 }

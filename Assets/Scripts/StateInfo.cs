@@ -10,13 +10,12 @@ public class StateInfo : MonoBehaviour
 
     public Texture2D attackTexture;
     public Texture2D followTexture;
-    // Start is called before the first frame update
+
     void Start()
     {
         Soldier = transform.parent.GetComponent<SoldierBehavior>();
     }
 
-    // Update is called once per frame
     void Update()
     {
         GenericClass.E_Action action = Soldier._actionState;

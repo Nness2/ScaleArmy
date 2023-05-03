@@ -21,7 +21,7 @@ public class SoldierBehavior : MonoBehaviour
     //Enemy Things
     private GameObject[] targets;        // Tableau contenant tous les PNJ cibles
     public GameObject currentTarget;    // Référence au PNJ cible actuel
-    private Statistique currentTargetStatistique;    // Référence au PNJ cible actuel
+    public Statistique currentTargetStatistique;    // Référence au PNJ cible actuel
     public string targetTag = "Enemy"; // Tag du PNJ cible
 
     private bool isAttacking = false;    // Indique si l'ennemi est en train d'attaquer
@@ -33,6 +33,7 @@ public class SoldierBehavior : MonoBehaviour
 
     private Statistique Stat_Script;
     private AnimationManager Anim_Script;
+
 
     private void Start()
     {
@@ -300,10 +301,7 @@ public class SoldierBehavior : MonoBehaviour
                 break;
         }
 
-        if (Input.GetMouseButtonUp(0))
-        {
-            LaunchAssault();
-        }
+
     }
 
     IEnumerator ResetBoolAfterDelay()
@@ -348,28 +346,7 @@ public class SoldierBehavior : MonoBehaviour
         #endregion
     }
 
-    private void LaunchAssault()
-    {
-        #region Quand on clique sur un enemy on lui attribu un target 
 
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        int layerMask3 = 1 << LayerMask.NameToLayer("Monster");  // ignore tous les layers sauf "Zone"
-        RaycastHit hit;
-        if (Physics.Raycast(ray.origin, ray.direction * 100, out hit, layerMask3))
-        {
-            if (hit.transform.tag == "Enemy")
-            {
-                if (Character.GetComponent<PlayerController>().ActivesZone.Contains(_zoneAttribute))
-                {
-                    currentTarget = hit.transform.gameObject;
-                    currentTargetStatistique = currentTarget.GetComponent<Statistique>(); // on réccupére également ses information
-                    SelfIdle = false;
-                    //GetComponent<Rigidbody>().AddForce(((currentTarget.transform.position + new Vector3(0,60,0)) - transform.position) * 3);
-                }
-            }
-        }
-        #endregion
-    }
 
     private void SetAllIdle(bool isIdle)
     {
@@ -387,19 +364,26 @@ public class SoldierBehavior : MonoBehaviour
 
     private void OnMouseDown()
     {
-        DSpline_Script.points.Clear();
-        DSpline_Script.readyToDraw = true;
-        DSpline_Script.ZoneChoosed = GetComponent<SoldierBehavior>()._zoneAttribute;
-        Character.GetComponent<PlayerController>().LineFollower.transform.position = transform.position;
-        if (!Character.GetComponent<PlayerController>().ManagerActivate)
+        if(tag == "MyMonster")
         {
-            DSpline_Script.UiPannel.SetActive(true);
+            DSpline_Script.points.Clear();
+            DSpline_Script.readyToDraw = true;
+            DSpline_Script.ZoneChoosed = GetComponent<SoldierBehavior>()._zoneAttribute;
+            Character.GetComponent<PlayerController>().LineFollower.transform.position = transform.position;
+            if (!Character.GetComponent<PlayerController>().ManagerActivate)
+            {
+                DSpline_Script.UiPannel.SetActive(true);
+            }
         }
+
     }
 
     private void OnMouseUp()
     {
-        DSpline_Script.readyToDraw = false;
-        //DSpline_Script.ZoneChoosed = GenericClass.E_Zone.Back;
+        if (tag == "MyMonster")
+        {
+            DSpline_Script.readyToDraw = false;
+            //DSpline_Script.ZoneChoosed = GenericClass.E_Zone.Back;
+        }
     }
 }
