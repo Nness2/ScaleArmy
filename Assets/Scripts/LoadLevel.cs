@@ -7,6 +7,9 @@ public class LoadLevel : MonoBehaviour
 {
     public GameObject MenuInGame;
     public PlayerController PlyCtr_Script;
+
+    public Transform MonsterParent;
+
     void Start()
     {
     }
@@ -50,6 +53,11 @@ public class LoadLevel : MonoBehaviour
     public void RestartLevel()
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    }
+
+    public void NextLevel()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name, LoadSceneMode.Single);
     }
 
 }

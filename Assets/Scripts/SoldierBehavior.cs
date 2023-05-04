@@ -313,7 +313,7 @@ public class SoldierBehavior : MonoBehaviour
         Anim_Script._animator.SetBool("Attack", false);
         #endregion
     }
-
+    
 
     private void OnCollisionStay(Collision collision)
     {

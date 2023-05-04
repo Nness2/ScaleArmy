@@ -36,6 +36,15 @@ public class GenericClass : MonoBehaviour
         //FrontRight,
     }
 
+
+    [System.Serializable]
+    public enum E_MonsterType
+    {
+        water,
+        earth,
+        //FrontLeft,
+        //FrontRight,
+    }
     public 
 
     void Start()

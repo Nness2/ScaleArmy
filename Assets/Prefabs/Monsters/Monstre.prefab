@@ -297,8 +297,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _startHealth: 100
   _healthbar: {fileID: 3598412406110123482}
-  EnemyBar: {r: 0.15294118, g: 1, b: 0.011764706, a: 0}
+  EnemyBar: {r: 0.15294118, g: 1, b: 0.011764706, a: 1}
   plyCtrl_Script: {fileID: 0}
+  _type: 0
   monsterImage: {fileID: 21300000, guid: 73183756ee50b884d9d56ec75f89d4ee, type: 3}
   _health: 100
   damage: 15
@@ -306,6 +307,9 @@ MonoBehaviour:
   attackSpeed: 1
   attackDistance: 2
   detectDistance: 10
+  UIEndPopup: {fileID: 0}
+  ButtonPanel: {fileID: 0}
+  UIJoyStick: {fileID: 0}
 --- !u!114 &751040215762523445
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -326,6 +330,7 @@ MonoBehaviour:
   _rigidbody: {fileID: 948409383110329783}
   _actionState: 0
   currentTarget: {fileID: 0}
+  currentTargetStatistique: {fileID: 0}
   targetTag: Enemy
   SelfIdle: 0
   FlagSelfIdle: 0
@@ -345,6 +350,7 @@ MonoBehaviour:
   newZone: 0
   armyManager_Script: {fileID: 0}
   plyrControl_Script: {fileID: 0}
+  ZoneSelect: {fileID: 0}
 --- !u!114 &550817733151607487
 MonoBehaviour:
   m_ObjectHideFlags: 0

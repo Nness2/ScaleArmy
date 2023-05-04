@@ -6,7 +6,7 @@ using UnityEngine.UI;
 public class PlayerController : MonoBehaviour
 {
     [SerializeField] private Rigidbody _rigidbody;
-    [SerializeField] private FixedJoystick _joyStick;
+    //[SerializeField] private FixedJoystick _joyStick;
     [SerializeField] private Animator _animator;
 
     [SerializeField] private float _moveSpeed;
@@ -33,6 +33,7 @@ public class PlayerController : MonoBehaviour
     public Text CanvasHealth;
     public Text CanvasDamage;
     public Text CanvasAtkSpeed;
+    public Text CanvasLevel;
 
     private GameObject GM_Script;
 
@@ -42,6 +43,8 @@ public class PlayerController : MonoBehaviour
     public GameObject AssaultButton;
 
     public GameObject LastEnemyClicked;
+
+    public Transform ArmyParent;
 
     void Start()
     {
@@ -61,8 +64,16 @@ public class PlayerController : MonoBehaviour
 
     private void FixedUpdate()
     {
-        _rigidbody.velocity = new Vector3(_joyStick.Horizontal * _moveSpeed, _rigidbody.velocity.y, _joyStick.Vertical * _moveSpeed);
-        if(_joyStick.Horizontal != 0 || _joyStick.Vertical != 0)
+        //_rigidbody.velocity = new Vector3(_joyStick.Horizontal * _moveSpeed, _rigidbody.velocity.y, _joyStick.Vertical * _moveSpeed);
+        float horizontalInput = Input.GetAxis("Horizontal");
+        float verticalInput = Input.GetAxis("Vertical");
+        Vector3 movement = new Vector3(horizontalInput, 0, verticalInput).normalized;
+        _rigidbody.velocity = movement * _moveSpeed;
+
+        //_rigidbody.velocity = new Vector3(horizontalInput * _moveSpeed, _rigidbody.velocity.y, verticalInput * _moveSpeed);
+
+        //if(_joyStick.Horizontal != 0 || _joyStick.Vertical != 0)
+        if (Mathf.Abs(horizontalInput) > 0 || Mathf.Abs(verticalInput) > 0)
         {
             transform.rotation = Quaternion.LookRotation(_rigidbody.velocity);
             _animator.SetBool("isRunning", true);

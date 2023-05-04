@@ -16,8 +16,12 @@ public class FeedManager : MonoBehaviour
     {
         MouseDown = false;
         newZone = GetComponent<SoldierBehavior>()._zoneAttribute;
-        armyManager_Script = GameObject.FindGameObjectWithTag("LocalPlayer").GetComponent<ArmyManager>();
-        plyrControl_Script = GameObject.FindGameObjectWithTag("LocalPlayer").GetComponent<PlayerController>();
+
+        armyManager_Script = Object.FindObjectOfType<ArmyManager>();
+        plyrControl_Script = Object.FindObjectOfType<PlayerController>();
+
+        //armyManager_Script = GameObject.FindGameObjectWithTag("LocalPlayer").GetComponent<ArmyManager>();
+        //plyrControl_Script = GameObject.FindGameObjectWithTag("LocalPlayer").GetComponent<PlayerController>();
         Tofeed = null;
     }
 
@@ -108,8 +112,10 @@ public class FeedManager : MonoBehaviour
                     if (Tofeed != null)
                     {
                         newZone = GetComponent<SoldierBehavior>()._zoneAttribute;
+
                     }
                     GetComponent<SoldierBehavior>()._zoneAttribute = newZone;
+                    PlayerPrefs.SetInt(transform.name + "zone", (int)newZone); // Definie le type
                     GetComponent<SoldierBehavior>().enabled = true;
 
                 }
@@ -152,22 +158,29 @@ public class FeedManager : MonoBehaviour
                 {
                     if (Tofeed != null)
                     {
-                        if (Tofeed.GetComponent<Statistique>()._health < Tofeed.GetComponent<Statistique>()._startHealth)
+                        if (Tofeed.GetComponent<Statistique>()._level == GetComponent<Statistique>()._level) // If les 2 monstres on le même niveau
                         {
-                            int newHealth = (int)(Tofeed.GetComponent<Statistique>()._health + GetComponent<Statistique>()._health);
-                            if (newHealth > Tofeed.GetComponent<Statistique>()._startHealth)
+                            if (Tofeed.GetComponent<Statistique>()._health < Tofeed.GetComponent<Statistique>()._startHealth)
                             {
-                                Tofeed.GetComponent<Statistique>()._health = Tofeed.GetComponent<Statistique>()._startHealth;
-                                Tofeed.GetComponent<Statistique>().ChangeHealthValue((int)(Tofeed.GetComponent<Statistique>()._startHealth));
-                            }
-                            else
-                            {
-                                Tofeed.GetComponent<Statistique>().ChangeHealthValue(newHealth);
-                            }
-                            Destroy(transform.gameObject, 0.1f);
-                        }
-                        Tofeed.GetComponent<AnimationManager>()._animator.SetInteger("State", (int)GenericClass.E_MonsterAnimState.Idle);
+                                int newHealth = (int)(Tofeed.GetComponent<Statistique>()._health + GetComponent<Statistique>()._health);
+                                if (newHealth > Tofeed.GetComponent<Statistique>()._startHealth)
+                                {
+                                    Tofeed.GetComponent<Statistique>()._health = Tofeed.GetComponent<Statistique>()._startHealth;
+                                    Tofeed.GetComponent<Statistique>().ChangeHealthValue((int)(Tofeed.GetComponent<Statistique>()._startHealth));
+                                }
+                                else
+                                {
+                                    Tofeed.GetComponent<Statistique>().ChangeHealthValue(newHealth);
+                                }
+                                //Destroy(transform.gameObject, 0.1f);
+                                Tofeed.GetComponent<Statistique>()._level++;
+                                PlayerPrefs.SetInt(Tofeed.name + "level", PlayerPrefs.GetInt(Tofeed.name + "level") + 1);
+                                GetComponent<Statistique>().MonsterDieDestroy(transform, 0.1f);
 
+
+                            }
+                            Tofeed.GetComponent<AnimationManager>()._animator.SetInteger("State", (int)GenericClass.E_MonsterAnimState.Idle);
+                        }
                     }
                 }
             }

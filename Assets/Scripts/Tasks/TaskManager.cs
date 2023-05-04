@@ -39,6 +39,10 @@ public class TaskManager : MonoBehaviour
                 doorAnim.Play();
             }
         }
+        if (Input.GetKey(KeyCode.O))
+        {
+            doorAnim.Play();
+        }
         #endregion
 
         #region DetectProximityTask
