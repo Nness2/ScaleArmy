@@ -15,13 +15,21 @@ public class ArmyManager : MonoBehaviour
     public List<GameObject> Army;
 
     // Monsters prefab
-    public GameObject waterMonsterPrefab;
-    public GameObject earthMonsterPrefab;
+    //public GameObject waterMonsterPrefab;
+    public GameObject MonsterPrefab;
     //public GameObject ZonesFrontLeft;
     //public GameObject ZonesFrontRight;
 
     public bool OverPopulate;
     public bool WaitOverPopulate;
+
+    //MonsterColor
+    public Material BlueMat;
+    public Material YellowMat;
+    public Material RedMat;
+    public Material GreenMat;
+    public Material PurpleMat;
+
 
     void Start()
     {
@@ -29,20 +37,25 @@ public class ArmyManager : MonoBehaviour
         WaitOverPopulate = false;
         Army = new List<GameObject>();
         
-        if (PlayerPrefs.GetInt("nbr") == 0)//If No monster in army give 3 basic monster, it's the case for the first level map
+        if (Army.Count == 0)//If No monster in army give 3 basic monster, it's the case for the first level map
         {
+            PlayerPrefs.DeleteAll();
             for (int i = 1; i <= 3; i++)
             {
                 PlayerPrefs.SetInt("nbr", PlayerPrefs.GetInt("nbr") + 1); // Incremente le nbr de monster
                 string monsterName = "Monster" + PlayerPrefs.GetInt("nbr");
 
                 PlayerPrefs.SetFloat(monsterName, 100);
-                PlayerPrefs.SetInt(monsterName + "type", (int)GenericClass.E_MonsterType.water);
 
-                GameObject newMonster = GameObject.Instantiate(waterMonsterPrefab, transform.position, Quaternion.identity);
+                GameObject newMonster = GameObject.Instantiate(MonsterPrefab, GetPositionOfZone((GenericClass.E_Zone)PlayerPrefs.GetInt(monsterName + "zone")), Quaternion.identity);
+                ChangeMonsterMat(newMonster, GreenMat);
                 newMonster.name = monsterName;
+                newMonster.tag = "MyMonster";
                 PlayerPrefs.SetInt(monsterName + "level", newMonster.GetComponent<Statistique>()._level);
                 newMonster.GetComponent<Statistique>()._health = PlayerPrefs.GetFloat(monsterName);
+                newMonster.GetComponent<Statistique>().setEnemyBarToGreen();
+                newMonster.GetComponent<SoldierBehavior>().enabled = true;
+                newMonster.GetComponent<EnemyBehavior>().enabled = false;
                 newMonster.transform.SetParent(GetComponent<PlayerController>().ArmyParent);
                 Army.Add(newMonster);
             }
@@ -56,15 +69,9 @@ public class ArmyManager : MonoBehaviour
                 if (PlayerPrefs.GetFloat(monsterName) > 0)
                 {
                     GameObject newMonster = null;
-                    switch (PlayerPrefs.GetInt(monsterName + "type"))
-                    {
-                        case (int)GenericClass.E_MonsterType.earth:
-                            newMonster = GameObject.Instantiate(earthMonsterPrefab, transform.position, Quaternion.identity);
-                            break;
-                        case (int)GenericClass.E_MonsterType.water:
-                            newMonster = GameObject.Instantiate(waterMonsterPrefab, transform.position, Quaternion.identity);
-                            break;
-                    }
+                    newMonster = GameObject.Instantiate(MonsterPrefab, (GetPositionOfZone((GenericClass.E_Zone)PlayerPrefs.GetInt(monsterName + "zone")) + new Vector3(i / 10, 0, -i / 10)), Quaternion.identity);
+                    newMonster.GetComponent<Statistique>()._level = PlayerPrefs.GetInt(monsterName + "level");
+                    updateMonsterColor(newMonster, newMonster.GetComponent<Statistique>()._level);
 
                     //Update monster statistique with data saved
                     newMonster.name = monsterName;
@@ -72,12 +79,10 @@ public class ArmyManager : MonoBehaviour
                     newMonster.GetComponent<Statistique>()._health = PlayerPrefs.GetFloat(monsterName);
                     newMonster.GetComponent<Statistique>().setEnemyBarToGreen();
                     newMonster.transform.SetParent(GetComponent<PlayerController>().ArmyParent);
-                    newMonster.GetComponent<Statistique>()._level = PlayerPrefs.GetInt(monsterName+"level");
                     newMonster.GetComponent<SoldierBehavior>().enabled = true;
+                    newMonster.GetComponent<EnemyBehavior>().enabled = false;
                     newMonster.GetComponent<SoldierBehavior>()._zoneAttribute = (GenericClass.E_Zone)PlayerPrefs.GetInt(monsterName+"zone");
                     Army.Add(newMonster);
-                    if (newMonster.GetComponent<EnemyBehavior>() != null)
-                        newMonster.GetComponent<EnemyBehavior>().enabled = false;
                 }
             }
         }
@@ -155,5 +160,60 @@ public class ArmyManager : MonoBehaviour
         ZonesBackMiddle.GetComponent<MeshRenderer>().material = WhiteZone;
         ZonesLeft.GetComponent<MeshRenderer>().material = WhiteZone;
         ZonesRight.GetComponent<MeshRenderer>().material = WhiteZone;
+    }
+
+    public Vector3 GetPositionOfZone(GenericClass.E_Zone zone)
+    {
+        Vector3 zonePose = Vector3.zero;
+
+        switch (zone)
+        {
+            case GenericClass.E_Zone.Back:
+                zonePose = ZonesBackMiddle.transform.position;
+                break;
+
+            case GenericClass.E_Zone.Left:
+                zonePose = ZonesLeft.transform.position;
+                break;
+
+            case GenericClass.E_Zone.Right:
+                zonePose = ZonesRight.transform.position;
+                break;
+        }
+
+        return zonePose; 
+    }
+
+    public void ChangeMonsterMat(GameObject mtr, Material mat)
+    {
+        GameObject MatObject = mtr.transform.GetChild(0).gameObject;
+        Material[] materials = MatObject.GetComponent<SkinnedMeshRenderer>().materials;
+
+        materials[0] = mat;
+
+
+        MatObject.GetComponent<SkinnedMeshRenderer>().materials = materials;
+    }
+
+    public void updateMonsterColor(GameObject mtr,int level)
+    {
+        switch (level)
+        {
+            case 1:
+                ChangeMonsterMat(mtr, GreenMat);
+                break;
+            case 2:
+                ChangeMonsterMat(mtr, BlueMat);
+                break;
+            case 3:
+                ChangeMonsterMat(mtr, YellowMat);
+                break;
+            case 4:
+                ChangeMonsterMat(mtr, RedMat);
+                break;
+            case 5:
+                ChangeMonsterMat(mtr, RedMat);
+                break;
+        }
     }
 }

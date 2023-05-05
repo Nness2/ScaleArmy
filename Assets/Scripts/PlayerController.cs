@@ -52,8 +52,8 @@ public class PlayerController : MonoBehaviour
         DSpline_Script = GameObject.FindGameObjectWithTag("GameManager").GetComponent<DrawSpline>();
 
         GM_Script = GameObject.FindGameObjectWithTag("GameManager");
-        ActivesZone.Add(GenericClass.E_Zone.Left);
         ActivesZone.Add(GenericClass.E_Zone.Back);
+        ActivesZone.Add(GenericClass.E_Zone.Left);
         ActivesZone.Add(GenericClass.E_Zone.Right);
 
         armyManager_Script = GameObject.FindGameObjectWithTag("LocalPlayer").GetComponent<ArmyManager>();

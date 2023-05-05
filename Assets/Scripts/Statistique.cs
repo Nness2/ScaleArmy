@@ -14,7 +14,6 @@ public class Statistique : MonoBehaviour
 
     public PlayerController plyCtrl_Script;
 
-    public GenericClass.E_MonsterType _type;
     //Statistique
     public Sprite monsterImage;
     public float _health;
@@ -30,9 +29,11 @@ public class Statistique : MonoBehaviour
     public GameObject UIJoyStick;
     public int _level = 1;
 
+    private bool InfoUpadted;
 
     void Start()
     {
+        InfoUpadted = false;
         plyCtrl_Script = GameObject.FindGameObjectWithTag("LocalPlayer").GetComponent<PlayerController>();
 
         if (_health == 0)
@@ -120,7 +121,6 @@ public class Statistique : MonoBehaviour
             PlayerPrefs.SetInt("nbr", PlayerPrefs.GetInt("nbr")+1); // Incremente le nbr de monster
             transform.name = "Monster" + PlayerPrefs.GetInt("nbr"); // Attribue Id au nom du monstre
             PlayerPrefs.SetFloat(transform.name, _health); // Definie le nbr de points de vie
-            PlayerPrefs.SetInt(transform.name+"type", (int)_type); // Definie le type
             PlayerPrefs.SetInt(transform.name+"level", _level); // Definie le type
 
             plyCtrl_Script.armyManager_Script.Army.Add(transform.gameObject);
@@ -135,12 +135,37 @@ public class Statistique : MonoBehaviour
 
     void OnMouseDown()
     {
-        plyCtrl_Script.CanvasInfos.SetActive(true);
-        plyCtrl_Script.CanvasImage.sprite = monsterImage;
-        plyCtrl_Script.CanvasHealth.text = _health.ToString();
-        plyCtrl_Script.CanvasDamage.text = damage.ToString();
-        plyCtrl_Script.CanvasAtkSpeed.text = attackSpeed.ToString();
-        plyCtrl_Script.CanvasLevel.text = _level.ToString();
+        if(tag == "LocalPlayer")
+        {
+            plyCtrl_Script.CanvasInfos.SetActive(true);
+            plyCtrl_Script.CanvasImage.sprite = monsterImage;
+            plyCtrl_Script.CanvasHealth.text = _health.ToString();
+            plyCtrl_Script.CanvasDamage.text = damage.ToString();
+            plyCtrl_Script.CanvasAtkSpeed.text = attackSpeed.ToString();
+            plyCtrl_Script.CanvasLevel.text = _level.ToString();
+        }
+    }
+
+    private void OnMouseOver()
+    {
+        if(InfoUpadted == false)
+        {
+            if (tag == "MyMonster" || tag == "Enemy")
+            {
+                plyCtrl_Script.CanvasInfos.SetActive(true);
+                plyCtrl_Script.CanvasImage.sprite = monsterImage;
+                plyCtrl_Script.CanvasHealth.text = _health.ToString();
+                plyCtrl_Script.CanvasDamage.text = damage.ToString();
+                plyCtrl_Script.CanvasAtkSpeed.text = attackSpeed.ToString();
+                plyCtrl_Script.CanvasLevel.text = _level.ToString();
+                InfoUpadted = true;
+            }
+        }
+    }
+
+    private void OnMouseExit()
+    {
+        InfoUpadted = false;
     }
 
     public void setEnemyBarToGreen()
