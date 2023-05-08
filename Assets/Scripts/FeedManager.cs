@@ -174,8 +174,14 @@ public class FeedManager : MonoBehaviour
                                 }
                                 //Destroy(transform.gameObject, 0.1f);
                                 Tofeed.GetComponent<Statistique>()._level++;
+                                Tofeed.GetComponent<Statistique>()._health += 50;
+                                Tofeed.GetComponent<Statistique>()._startHealth += 50;
+                                Tofeed.GetComponent<Statistique>().damage += 10;
+                                Tofeed.GetComponent<Statistique>().attackSpeed += 0.1f;
                                 armyManager_Script.updateMonsterColor(Tofeed, Tofeed.GetComponent<Statistique>()._level);
                                 PlayerPrefs.SetInt(Tofeed.name + "level", PlayerPrefs.GetInt(Tofeed.name + "level") + 1);
+                                PlayerPrefs.SetInt(Tofeed.name + "damage", Tofeed.GetComponent<Statistique>().damage);
+                                PlayerPrefs.SetFloat(Tofeed.name + "AtkSpeed", Tofeed.GetComponent<Statistique>().attackSpeed);
                                 GetComponent<Statistique>().MonsterDieDestroy(transform, 0.1f);
 
 

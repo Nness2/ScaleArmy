@@ -29,30 +29,39 @@ public class ArmyManager : MonoBehaviour
     public Material RedMat;
     public Material GreenMat;
     public Material PurpleMat;
+    public Material BlackMat;
 
 
     void Start()
     {
         OverPopulate = false;
         WaitOverPopulate = false;
-        Army = new List<GameObject>();
-        
-        if (Army.Count == 0)//If No monster in army give 3 basic monster, it's the case for the first level map
+        int ArmyUnits = 0;
+        for (int i = 0; i < PlayerPrefs.GetInt("nbr") + 1; i++)
+        {
+            if(PlayerPrefs.GetFloat("Monster" + i) > 0)
+            {
+                ArmyUnits++;
+            }
+        }
+        if (ArmyUnits == 0)//If No monster in army give 3 basic monster, it's the case for the first level map
         {
             PlayerPrefs.DeleteAll();
             for (int i = 1; i <= 3; i++)
             {
                 PlayerPrefs.SetInt("nbr", PlayerPrefs.GetInt("nbr") + 1); // Incremente le nbr de monster
-                string monsterName = "Monster" + PlayerPrefs.GetInt("nbr");
+                string monsterName = "Monster" + i;
 
                 PlayerPrefs.SetFloat(monsterName, 100);
 
                 GameObject newMonster = GameObject.Instantiate(MonsterPrefab, GetPositionOfZone((GenericClass.E_Zone)PlayerPrefs.GetInt(monsterName + "zone")), Quaternion.identity);
-                ChangeMonsterMat(newMonster, GreenMat);
+                ChangeMonsterMat(newMonster, YellowMat);
                 newMonster.name = monsterName;
                 newMonster.tag = "MyMonster";
                 PlayerPrefs.SetInt(monsterName + "level", newMonster.GetComponent<Statistique>()._level);
-                newMonster.GetComponent<Statistique>()._health = PlayerPrefs.GetFloat(monsterName);
+                PlayerPrefs.SetInt(monsterName + "damage", newMonster.GetComponent<Statistique>().damage);
+                PlayerPrefs.SetFloat(monsterName + "AtkSpeed", newMonster.GetComponent<Statistique>().attackSpeed);
+                newMonster.GetComponent<Statistique>().ChangeHealthValue((int)PlayerPrefs.GetFloat(monsterName));
                 newMonster.GetComponent<Statistique>().setEnemyBarToGreen();
                 newMonster.GetComponent<SoldierBehavior>().enabled = true;
                 newMonster.GetComponent<EnemyBehavior>().enabled = false;
@@ -76,7 +85,11 @@ public class ArmyManager : MonoBehaviour
                     //Update monster statistique with data saved
                     newMonster.name = monsterName;
                     newMonster.tag = "MyMonster";
-                    newMonster.GetComponent<Statistique>()._health = PlayerPrefs.GetFloat(monsterName);
+                    //newMonster.GetComponent<Statistique>()._health = PlayerPrefs.GetFloat(monsterName);
+                    newMonster.GetComponent<Statistique>().ChangeHealthValue((int)PlayerPrefs.GetFloat(monsterName));
+
+                    newMonster.GetComponent<Statistique>().damage = PlayerPrefs.GetInt(monsterName + "damage");
+                    newMonster.GetComponent<Statistique>().attackSpeed = PlayerPrefs.GetFloat(monsterName + "AtkSpeed");
                     newMonster.GetComponent<Statistique>().setEnemyBarToGreen();
                     newMonster.transform.SetParent(GetComponent<PlayerController>().ArmyParent);
                     newMonster.GetComponent<SoldierBehavior>().enabled = true;
@@ -113,13 +126,20 @@ public class ArmyManager : MonoBehaviour
         GameObject target = null;
         foreach (GameObject obj in Army)
         {
-            if(obj != monster.transform.gameObject)
+            if(monster == null)
             {
-                float distance = Vector3.Distance(monster.transform.position, obj.transform.position);
-                if (distance < minDistance)
+                break;
+            }
+            if(obj != null)
+            {
+                if (obj != monster.transform.gameObject)
                 {
-                    minDistance = distance;
-                    target = obj;
+                    float distance = Vector3.Distance(monster.transform.position, obj.transform.position);
+                    if (distance < minDistance)
+                    {
+                        minDistance = distance;
+                        target = obj;
+                    }
                 }
             }
         }
@@ -200,20 +220,24 @@ public class ArmyManager : MonoBehaviour
         switch (level)
         {
             case 1:
-                ChangeMonsterMat(mtr, GreenMat);
+                ChangeMonsterMat(mtr, YellowMat);
                 break;
             case 2:
-                ChangeMonsterMat(mtr, BlueMat);
+                ChangeMonsterMat(mtr, GreenMat);
                 break;
             case 3:
-                ChangeMonsterMat(mtr, YellowMat);
+                ChangeMonsterMat(mtr, BlueMat);
                 break;
             case 4:
                 ChangeMonsterMat(mtr, RedMat);
                 break;
             case 5:
-                ChangeMonsterMat(mtr, RedMat);
+                ChangeMonsterMat(mtr, BlackMat);
+                break;
+            case 6:
+                ChangeMonsterMat(mtr, PurpleMat);
                 break;
         }
     }
 }
+

@@ -48,6 +48,15 @@ public class PlayerController : MonoBehaviour
 
     void Start()
     {
+        if(PlayerPrefs.GetFloat("Teddy") <= 0)
+        {
+            GetComponent<Statistique>().ChangeHealthValue((int)GetComponent<Statistique>()._startHealth);
+        }
+        else
+        {
+            GetComponent<Statistique>().ChangeHealthValue((int)PlayerPrefs.GetFloat("Teddy"));
+        }
+
         LastEnemyClicked = null;
         DSpline_Script = GameObject.FindGameObjectWithTag("GameManager").GetComponent<DrawSpline>();
 
@@ -79,6 +88,8 @@ public class PlayerController : MonoBehaviour
             _animator.SetBool("isRunning", true);
             GameObject[] monsterList = GameObject.FindGameObjectsWithTag("MyMonster");
             GM_Script.GetComponent<DrawSpline>().CleanLineRenderer();
+
+            GM_Script.GetComponent<TaskManager>().CloseActifTaskCanvas();
 
             foreach (GameObject soldier in monsterList)
             {

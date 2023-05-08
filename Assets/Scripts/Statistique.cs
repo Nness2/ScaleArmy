@@ -36,14 +36,15 @@ public class Statistique : MonoBehaviour
         InfoUpadted = false;
         plyCtrl_Script = GameObject.FindGameObjectWithTag("LocalPlayer").GetComponent<PlayerController>();
 
-        if (_health == 0)
+        /*if (_health == 0)
         {
             _health = _startHealth;
         }
+
         else
         {
             ChangeHealthValue((int)_health);
-        }
+        }*/
     }
 
     // Update is called once per frame
@@ -64,8 +65,8 @@ public class Statistique : MonoBehaviour
     {
         //_health -= amount;
         //_healthbar.fillAmount = _health / _startHealth;
-
-        ChangeHealthValue((int)_health - amount);
+        int newHealth = (int)_health - amount;
+        ChangeHealthValue(newHealth);
         if (transform.tag == "MyMonster" || transform.tag == "Enemy")
         {
             if (_health <= 0)
@@ -78,11 +79,13 @@ public class Statistique : MonoBehaviour
 
         if (transform.tag == "LocalPlayer")
         {
+            PlayerPrefs.SetFloat("Teddy", newHealth);
             if (_health <= 0)
             {
                 UIEndPopup.SetActive(true);
                 ButtonPanel.SetActive(false);
                 UIJoyStick.SetActive(false);
+                PlayerPrefs.DeleteAll();
             }
         }
     }
@@ -122,6 +125,8 @@ public class Statistique : MonoBehaviour
             transform.name = "Monster" + PlayerPrefs.GetInt("nbr"); // Attribue Id au nom du monstre
             PlayerPrefs.SetFloat(transform.name, _health); // Definie le nbr de points de vie
             PlayerPrefs.SetInt(transform.name+"level", _level); // Definie le type
+            PlayerPrefs.SetInt(transform.name+"damage", damage); // Definie le type
+            PlayerPrefs.SetFloat(transform.name+"AtkSpeed", attackSpeed); // Definie le type
 
             plyCtrl_Script.armyManager_Script.Army.Add(transform.gameObject);
         }
@@ -166,6 +171,7 @@ public class Statistique : MonoBehaviour
     private void OnMouseExit()
     {
         InfoUpadted = false;
+        plyCtrl_Script.CanvasInfos.SetActive(false);
     }
 
     public void setEnemyBarToGreen()

@@ -29,6 +29,8 @@ public class EnemyBehavior : MonoBehaviour
         player = GameObject.FindGameObjectWithTag("LocalPlayer").GetComponent<PlayerController>();
         Anim_Script = GetComponent<AnimationManager>();
         FlagTarget = null;
+
+        player.armyManager_Script.updateMonsterColor(gameObject, gameObject.GetComponent<Statistique>()._level);
     }
 
     private void Update()
