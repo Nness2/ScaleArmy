@@ -142,12 +142,7 @@ public class Statistique : MonoBehaviour
     {
         if(tag == "LocalPlayer")
         {
-            plyCtrl_Script.CanvasInfos.SetActive(true);
-            plyCtrl_Script.CanvasImage.sprite = monsterImage;
-            plyCtrl_Script.CanvasHealth.text = _health.ToString();
-            plyCtrl_Script.CanvasDamage.text = damage.ToString();
-            plyCtrl_Script.CanvasAtkSpeed.text = attackSpeed.ToString();
-            plyCtrl_Script.CanvasLevel.text = _level.ToString();
+            UpdateStatInfoPanel();
         }
     }
 
@@ -157,12 +152,7 @@ public class Statistique : MonoBehaviour
         {
             if (tag == "MyMonster" || tag == "Enemy")
             {
-                plyCtrl_Script.CanvasInfos.SetActive(true);
-                plyCtrl_Script.CanvasImage.sprite = monsterImage;
-                plyCtrl_Script.CanvasHealth.text = _health.ToString();
-                plyCtrl_Script.CanvasDamage.text = damage.ToString();
-                plyCtrl_Script.CanvasAtkSpeed.text = attackSpeed.ToString();
-                plyCtrl_Script.CanvasLevel.text = _level.ToString();
+                UpdateStatInfoPanel();
                 InfoUpadted = true;
             }
         }
@@ -188,5 +178,16 @@ public class Statistique : MonoBehaviour
         PlayerPrefs.DeleteKey(monster.name + "zone");  //Supprime les données du monstre
         plyCtrl_Script.armyManager_Script.Army.Remove(monster.gameObject);
         Destroy(monster.gameObject);
+    }
+
+    public void UpdateStatInfoPanel()
+    {
+        plyCtrl_Script.CanvasInfos.SetActive(true);
+        plyCtrl_Script.CanvasImage.sprite = monsterImage;
+        plyCtrl_Script.CanvasHealth.text = _health.ToString();
+        plyCtrl_Script.CanvasDamage.text = damage.ToString();
+        plyCtrl_Script.CanvasAtkSpeed.text = attackSpeed.ToString();
+        plyCtrl_Script.CanvasLevel.text = _level.ToString();
+        InfoUpadted = true;
     }
 }

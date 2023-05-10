@@ -22,7 +22,7 @@ public class TaskManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        PlayerPrefs.SetInt("MapLevel", PlayerPrefs.GetInt("MapLevel") +1);
+        MapLevel = PlayerPrefs.GetInt("MapLevel")+1;
         NbrTaskEnd = 0;
         Character = GameObject.FindGameObjectWithTag("LocalPlayer");
         AllTaskTotem = GameObject.FindGameObjectsWithTag("TaskTotem");

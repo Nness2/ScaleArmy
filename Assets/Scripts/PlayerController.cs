@@ -48,15 +48,6 @@ public class PlayerController : MonoBehaviour
 
     void Start()
     {
-        if(PlayerPrefs.GetFloat("Teddy") <= 0)
-        {
-            GetComponent<Statistique>().ChangeHealthValue((int)GetComponent<Statistique>()._startHealth);
-        }
-        else
-        {
-            GetComponent<Statistique>().ChangeHealthValue((int)PlayerPrefs.GetFloat("Teddy"));
-        }
-
         LastEnemyClicked = null;
         DSpline_Script = GameObject.FindGameObjectWithTag("GameManager").GetComponent<DrawSpline>();
 
@@ -308,7 +299,7 @@ public class PlayerController : MonoBehaviour
         #region Quand on clique sur un enemy on lui attribu un target 
 
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        int layerMask3 = 1 << LayerMask.NameToLayer("Monster");  // ignore tous les layers sauf "Zone"
+        int layerMask3 = 1 << LayerMask.NameToLayer("Monster");  // ignore tous les layers sauf "Monster"
         RaycastHit hit;
         if (Physics.Raycast(ray.origin, ray.direction * 100, out hit, layerMask3))
         {

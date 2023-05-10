@@ -2,11 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TaskBase : MonoBehaviour
+public class ChestBase : MonoBehaviour
 {
-    public GameObject TaskCanvas;
-    public bool _done;
-    public GameObject ValidProof;
     public GameObject MonsterPrefab;
     private ArmyManager ArmyMng_Script;
     private TaskManager TaskMng_Script;
@@ -23,7 +20,6 @@ public class TaskBase : MonoBehaviour
             LocationsList.Add(loc.gameObject);
         }
 
-        _done = false;
         ArmyMng_Script = GameObject.FindGameObjectWithTag("LocalPlayer").GetComponent<ArmyManager>();
         TaskMng_Script = GameObject.FindGameObjectWithTag("GameManager").GetComponent<TaskManager>();
 

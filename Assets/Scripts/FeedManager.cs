@@ -163,19 +163,13 @@ public class FeedManager : MonoBehaviour
                             if (Tofeed.GetComponent<Statistique>()._health < Tofeed.GetComponent<Statistique>()._startHealth)
                             {
                                 int newHealth = (int)(Tofeed.GetComponent<Statistique>()._health + GetComponent<Statistique>()._health);
+                                Tofeed.GetComponent<Statistique>()._startHealth += 50;
                                 if (newHealth > Tofeed.GetComponent<Statistique>()._startHealth)
                                 {
-                                    Tofeed.GetComponent<Statistique>()._health = Tofeed.GetComponent<Statistique>()._startHealth;
-                                    Tofeed.GetComponent<Statistique>().ChangeHealthValue((int)(Tofeed.GetComponent<Statistique>()._startHealth));
+                                    newHealth = (int)Tofeed.GetComponent<Statistique>()._startHealth;
                                 }
-                                else
-                                {
-                                    Tofeed.GetComponent<Statistique>().ChangeHealthValue(newHealth);
-                                }
-                                //Destroy(transform.gameObject, 0.1f);
                                 Tofeed.GetComponent<Statistique>()._level++;
-                                Tofeed.GetComponent<Statistique>()._health += 50;
-                                Tofeed.GetComponent<Statistique>()._startHealth += 50;
+                                Tofeed.GetComponent<Statistique>().ChangeHealthValue(newHealth);
                                 Tofeed.GetComponent<Statistique>().damage += 10;
                                 Tofeed.GetComponent<Statistique>().attackSpeed += 0.1f;
                                 armyManager_Script.updateMonsterColor(Tofeed, Tofeed.GetComponent<Statistique>()._level);
@@ -183,7 +177,7 @@ public class FeedManager : MonoBehaviour
                                 PlayerPrefs.SetInt(Tofeed.name + "damage", Tofeed.GetComponent<Statistique>().damage);
                                 PlayerPrefs.SetFloat(Tofeed.name + "AtkSpeed", Tofeed.GetComponent<Statistique>().attackSpeed);
                                 GetComponent<Statistique>().MonsterDieDestroy(transform, 0.1f);
-
+                                Tofeed.GetComponent<Statistique>().UpdateStatInfoPanel();
 
                             }
                             Tofeed.GetComponent<AnimationManager>()._animator.SetInteger("State", (int)GenericClass.E_MonsterAnimState.Idle);
