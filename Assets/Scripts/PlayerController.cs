@@ -42,13 +42,13 @@ public class PlayerController : MonoBehaviour
 
     public GameObject AssaultButton;
 
-    public GameObject LastEnemyClicked;
+    //public GameObject LastEnemyClicked;
 
     public Transform ArmyParent;
 
     void Start()
     {
-        LastEnemyClicked = null;
+        //LastEnemyClicked = null;
         DSpline_Script = GameObject.FindGameObjectWithTag("GameManager").GetComponent<DrawSpline>();
 
         GM_Script = GameObject.FindGameObjectWithTag("GameManager");
@@ -82,6 +82,7 @@ public class PlayerController : MonoBehaviour
 
             GM_Script.GetComponent<TaskManager>().CloseActifTaskCanvas();
 
+            AssaultButton.SetActive(false);
             foreach (GameObject soldier in monsterList)
             {
                 soldier.GetComponent<SoldierBehavior>().SelfIdle = false;
@@ -109,7 +110,7 @@ public class PlayerController : MonoBehaviour
 
         if (Input.GetMouseButtonUp(0))
         {
-            DetectEnemyOnClick();
+            //DetectEnemyOnClick();
         }
     }
 
@@ -294,7 +295,7 @@ public class PlayerController : MonoBehaviour
 
 
     //Permet de garder le dernier enemy sur lequel le joueur à cliquer
-    private void DetectEnemyOnClick()
+    /*private void DetectEnemyOnClick()
     {
         #region Quand on clique sur un enemy on lui attribu un target 
 
@@ -310,15 +311,15 @@ public class PlayerController : MonoBehaviour
             }
         }
         #endregion
-    }
+    }*/
 
     //Permet d'envoyer à l'attaque nos monstres sur le dernier enemy sur lequel on a cliqué 
-    public void LaunchAssault()
+    public void LaunchAssault(GameObject monsterTarget)
     {
         SoldierBehavior[] soldiers = GameObject.FindObjectsOfType<SoldierBehavior>();
         foreach (SoldierBehavior Soldier in soldiers)
         {
-            Soldier.currentTarget = LastEnemyClicked.transform.gameObject;
+            Soldier.currentTarget = monsterTarget;//LastEnemyClicked.transform.gameObject;
             Soldier.currentTargetStatistique = Soldier.currentTarget.GetComponent<Statistique>(); // on réccupére également ses information
             Soldier.SelfIdle = false;
         }

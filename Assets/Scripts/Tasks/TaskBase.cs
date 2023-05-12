@@ -10,6 +10,7 @@ public class TaskBase : MonoBehaviour
     public GameObject MonsterPrefab;
     private ArmyManager ArmyMng_Script;
     private TaskManager TaskMng_Script;
+    public GameObject ModelToOutline;
 
     public GameObject ParentLocation;
     public List<GameObject> LocationsList;

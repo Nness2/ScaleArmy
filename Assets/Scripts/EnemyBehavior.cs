@@ -118,4 +118,12 @@ public class EnemyBehavior : MonoBehaviour
         Anim_Script._animator.SetBool("Attack", false);
 
     }
+
+    private void OnMouseDown()
+    {
+        if(GetComponent<EnemyBehavior>().enabled == true)
+        {
+            player.GetComponent<PlayerController>().LaunchAssault(gameObject);
+        }
+    }
 }

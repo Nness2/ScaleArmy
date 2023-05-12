@@ -36,6 +36,15 @@ public class GenericClass : MonoBehaviour
         //FrontRight,
     }
 
+    [System.Serializable]
+    public enum E_Loot
+    {
+        Flask,
+        Meat,
+        //FrontLeft,
+        //FrontRight,
+    }
+
 
     public 
 

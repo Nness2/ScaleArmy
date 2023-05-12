@@ -362,7 +362,7 @@ public class SoldierBehavior : MonoBehaviour
     }
 
 
-    private void OnMouseDown()
+    /*private void OnMouseDown()
     {
         if(tag == "MyMonster")
         {
@@ -370,10 +370,10 @@ public class SoldierBehavior : MonoBehaviour
             DSpline_Script.readyToDraw = true;
             DSpline_Script.ZoneChoosed = GetComponent<SoldierBehavior>()._zoneAttribute;
             Character.GetComponent<PlayerController>().LineFollower.transform.position = transform.position;
-            if (!Character.GetComponent<PlayerController>().ManagerActivate)
-            {
-                DSpline_Script.UiPannel.SetActive(true);
-            }
+            //if (!Character.GetComponent<PlayerController>().ManagerActivate)
+            //{
+            //    DSpline_Script.UiPannel.SetActive(true);
+            //}
         }
 
     }
@@ -385,5 +385,5 @@ public class SoldierBehavior : MonoBehaviour
             DSpline_Script.readyToDraw = false;
             //DSpline_Script.ZoneChoosed = GenericClass.E_Zone.Back;
         }
-    }
+    }*/
 }
