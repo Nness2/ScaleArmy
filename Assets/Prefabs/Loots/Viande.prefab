@@ -204,6 +204,7 @@ GameObject:
   - component: {fileID: 8824898688959665034}
   - component: {fileID: 8824898688959665033}
   - component: {fileID: 3206188233824570137}
+  - component: {fileID: 4429878123296300769}
   m_Layer: 0
   m_Name: Viande
   m_TagString: Untagged
@@ -285,7 +286,7 @@ CapsuleCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8824898688959665032}
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_Enabled: 1
   m_Radius: 0.5
   m_Height: 2
@@ -303,8 +304,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2cc9ff2deacdc9642b89786b88980e27, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _image: {fileID: 21300000, guid: 0f21c047a79e10b40a86829bab0dd287, type: 3}
-  _lootType: 0
+  _lootType: 2
+--- !u!114 &4429878123296300769
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8824898688959665032}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 17b29027f5772ec4799c53bee34c1fbd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Owned: 0
+  Tofeed: {fileID: 0}
 --- !u!1 &8842898391527942176
 GameObject:
   m_ObjectHideFlags: 0

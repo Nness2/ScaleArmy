@@ -22,7 +22,7 @@ public class ArmyManager : MonoBehaviour
     //Permet la gestion du nombre d'unité
     public bool OverPopulate;
     public bool WaitOverPopulate;
-    public float regulationDelay = 5;
+    public float regulationDelay = 3;
 
     //MonsterColor
     public Material BlueMat;
@@ -32,10 +32,22 @@ public class ArmyManager : MonoBehaviour
     public Material PurpleMat;
     public Material BlackMat;
 
-
+    private GameObject Gm_Script;
+    private InventoryManager Inv_Script;
     void Start()
     {
-        LoadStartMapData();
+        Gm_Script = GameObject.FindGameObjectWithTag("GameManager");
+        Inv_Script = Gm_Script.GetComponent<InventoryManager>();
+
+        //LoadStartMapData();
+
+        for (int i = 0; i < Inv_Script.InventoryElements.Count ; i++)
+        {
+            if((GenericClass.E_Loot)PlayerPrefs.GetInt("Inv" + i) != GenericClass.E_Loot.None)
+            {
+                Inv_Script.AddLootToInventory((GenericClass.E_Loot)PlayerPrefs.GetInt("Inv" + i));
+            }
+        }
 
         #region Vérifie si une session est toujour en court, attribue les hp en consequence
         if (PlayerPrefs.GetFloat("Teddy") <= 0) // Si le joueur a 0 hp, c'est que la session est fini ou n'a pas commencé
@@ -98,7 +110,7 @@ public class ArmyManager : MonoBehaviour
     IEnumerator OverPopulateAutoRegulation(GameObject monster)
     {
         #region Régulation du nombre d'unity, toute les regulationDelay on régule 
-        yield return new WaitForSeconds(regulationDelay); // wait for 1 second
+        yield return new WaitForSeconds(regulationDelay); // wait for 5 second
         float minDistance = Mathf.Infinity;
         GameObject target = null;
         foreach (GameObject obj in Army)
@@ -124,7 +136,8 @@ public class ArmyManager : MonoBehaviour
         {
             Vector3 direction = target.transform.position - monster.transform.position;
             monster.transform.rotation = Quaternion.LookRotation(direction);
-            target.GetComponent<Statistique>().TakeDamage(monster.GetComponent<Statistique>().damage, GenericClass.E_Action.Wait);
+            int DamageValue = monster.GetComponent<Statistique>().damage * ((Army.Count - maxArmyUnit + 1) / 2);
+            target.GetComponent<Statistique>().TakeDamage(DamageValue, GenericClass.E_Action.Wait);// * ((Army.Count - maxArmyUnit + 1) / 2), GenericClass.E_Action.Wait);
             monster.GetComponent<AnimationManager>()._animator.SetBool("Attack", true);
             yield return new WaitForSeconds(1); // wait for 1 second
             monster.GetComponent<AnimationManager>()._animator.SetBool("Attack", false);
@@ -229,23 +242,15 @@ public class ArmyManager : MonoBehaviour
         PlayerPrefs.DeleteAll();
         for (int i = 1; i <= nbrMonsterStart; i++)
         {
-            PlayerPrefs.SetInt("nbr", PlayerPrefs.GetInt("nbr") + 1); // Incremente le nbr de monster
             string monsterName = "Monster" + i;
 
 
-            GameObject newMonster = GameObject.Instantiate(MonsterPrefab, GetPositionOfZone((GenericClass.E_Zone)PlayerPrefs.GetInt(monsterName + "zone")), Quaternion.identity);
+            GameObject newMonster = GameObject.Instantiate(MonsterPrefab, GetPositionOfZone(GenericClass.E_Zone.Back), Quaternion.identity);
 
-            PlayerPrefs.SetFloat(monsterName, newMonster.GetComponent<Statistique>()._startHealth);
             ChangeMonsterMat(newMonster, YellowMat); // On attribue la couleur associé au level
             newMonster.name = monsterName; // On attribue le nom
             newMonster.tag = "MyMonster"; // On attribue le tag correspondant au soldat
 
-            //On sauvegarde dans le fichier les informations utile pour le prochain niveau
-            PlayerPrefs.SetInt(monsterName + "level", newMonster.GetComponent<Statistique>()._level);
-            PlayerPrefs.SetInt(monsterName + "damage", newMonster.GetComponent<Statistique>().damage);
-            PlayerPrefs.SetFloat(monsterName + "AtkSpeed", newMonster.GetComponent<Statistique>().attackSpeed);
-
-            newMonster.GetComponent<Statistique>().ChangeHealthValue((int)PlayerPrefs.GetFloat(monsterName)); // On update la barre de vie
             newMonster.GetComponent<Statistique>().setEnemyBarToGreen(); //On update la couleur de la barre de vie, vert = soldat
 
             //On active le script Soldier et désactive Enemy
@@ -254,7 +259,7 @@ public class ArmyManager : MonoBehaviour
 
             newMonster.transform.SetParent(GetComponent<PlayerController>().ArmyParent); // On ajoute le monstre dans le parent contenant tout les soldats
             Army.Add(newMonster); // On ajoute le monstre à notre liste Army contenant toute nos unités
-            SaveStartMapData(); //On sauvegarde les datas de l'armé dans le fichier
+            //SaveStartMapData(); //On sauvegarde les datas de l'armé dans le fichier
         }
     }
 
@@ -298,32 +303,46 @@ public class ArmyManager : MonoBehaviour
     //Permet de sauvegarder les datas du jeu à la fin du niveau
     public void SaveStartMapData()
     {
-        for (int i = 0; i < PlayerPrefs.GetInt("Mapnbr") + 1; i++)
+        for (int i = 0; i < Inv_Script.InventoryElements.Count; i++) 
         {
-            PlayerPrefs.DeleteKey("MapMonster");
-            PlayerPrefs.DeleteKey("MapMonster" + i + "level");
-            PlayerPrefs.DeleteKey("MapMonster" + i + "damage");
-            PlayerPrefs.DeleteKey("MapMonster" + i + "AtkSpeed");
-            PlayerPrefs.DeleteKey("MapMonster" + i + "State");
-            PlayerPrefs.DeleteKey("MapMonster" + i + "Zone");
+            if (Inv_Script.InventoryElements[i] != GenericClass.E_Loot.None)
+            {
+                PlayerPrefs.SetInt("Inv" + i, (int)Inv_Script.InventoryElements[i]);
+            }
         }
 
-        PlayerPrefs.SetFloat("MapTeddy", PlayerPrefs.GetFloat("Teddy"));
-        PlayerPrefs.SetInt("Mapnbr", PlayerPrefs.GetInt("nbr"));
-
-        for (int i = 0; i < PlayerPrefs.GetInt("nbr") + 1; i++)
+        /*for (int i = 0; i < PlayerPrefs.GetInt("Mapnbr") + 1; i++)
         {
-            PlayerPrefs.SetFloat("MapMonster" + i, PlayerPrefs.GetFloat("Monster" + i));
-            PlayerPrefs.SetInt("MapMonster" + i + "level", PlayerPrefs.GetInt("Monster" + i + "level"));
-            PlayerPrefs.SetInt("MapMonster" + i + "damage", PlayerPrefs.GetInt("Monster" + i + "damage"));
-            PlayerPrefs.SetFloat("MapMonster" + i + "AtkSpeed", PlayerPrefs.GetFloat("Monster" + i + "AtkSpeed"));
-            PlayerPrefs.SetInt("MapMonster" + i + "State", PlayerPrefs.GetInt("Monster" + i + "State"));
-            PlayerPrefs.SetInt("MapMonster" + i + "Zone", PlayerPrefs.GetInt("Monster" + i + "Zone"));
+            PlayerPrefs.DeleteKey("Monster");
+            PlayerPrefs.DeleteKey("Monster" + i + "level");
+            PlayerPrefs.DeleteKey("Monster" + i + "damage");
+            PlayerPrefs.DeleteKey("Monster" + i + "AtkSpeed");
+            PlayerPrefs.DeleteKey("Monster" + i + "State");
+            PlayerPrefs.DeleteKey("Monster" + i + "Zone");
+        }*/
+
+        PlayerPrefs.SetFloat("Teddy", GetComponent<Statistique>()._health);
+        PlayerPrefs.SetInt("nbr", Army.Count);
+
+        for (int i = 0; i < Army.Count; i++)
+        {
+            if(Army[i] != null)
+            {
+                Statistique stats = Army[i].GetComponent<Statistique>();
+                SoldierBehavior behavior = Army[i].GetComponent<SoldierBehavior>();
+
+                PlayerPrefs.SetFloat("Monster" + i, stats._health);
+                PlayerPrefs.SetInt("Monster" + i + "level", stats._level);
+                PlayerPrefs.SetInt("Monster" + i + "damage", stats.damage);
+                PlayerPrefs.SetFloat("Monster" + i + "AtkSpeed", stats.attackSpeed);
+                PlayerPrefs.SetInt("Monster" + i + "State", (int)behavior._actionState);
+                PlayerPrefs.SetInt("Monster" + i + "Zone", (int)behavior._zoneAttribute);
+            }
         }
     }
 
     //Permet de load les datas au début d'un nouveau niveau, Permet d'éviter que le joueur accumule des monstres en relançant le niveau en boucle
-    public void LoadStartMapData()
+    /*public void LoadStartMapData()
     {
 
         PlayerPrefs.SetFloat("Teddy", PlayerPrefs.GetFloat("MapTeddy"));
@@ -338,6 +357,6 @@ public class ArmyManager : MonoBehaviour
             PlayerPrefs.SetInt("Monster" + i + "State", PlayerPrefs.GetInt("MapMonster" + i + "State"));
             PlayerPrefs.SetInt("Monster" + i + "Zone", PlayerPrefs.GetInt("MapMonster" + i + "Zone"));
         }
-    }
+    }*/
 }
 

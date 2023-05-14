@@ -6,6 +6,8 @@ public class TaskBase : MonoBehaviour
 {
     public GameObject TaskCanvas;
     public bool _done;
+    public bool isNear;
+
     public GameObject ValidProof;
     public GameObject MonsterPrefab;
     private ArmyManager ArmyMng_Script;
@@ -23,7 +25,7 @@ public class TaskBase : MonoBehaviour
         {
             LocationsList.Add(loc.gameObject);
         }
-
+        isNear = false;
         _done = false;
         ArmyMng_Script = GameObject.FindGameObjectWithTag("LocalPlayer").GetComponent<ArmyManager>();
         TaskMng_Script = GameObject.FindGameObjectWithTag("GameManager").GetComponent<TaskManager>();
@@ -61,6 +63,30 @@ public class TaskBase : MonoBehaviour
 
     void Update()
     {
-        
+        float distance = Vector3.Distance(transform.position, ArmyMng_Script.transform.position);
+        if (distance < 3)
+        {
+            if (!isNear)
+            {
+                ModelToOutline.GetComponent<Outline>().enabled = true;
+                isNear = true;
+            }
+        }
+        else
+        {
+            if (isNear)
+            {
+                ModelToOutline.GetComponent<Outline>().enabled = false;
+                isNear = false;
+            }
+        }
+    }
+
+    private void OnMouseDown()
+    {
+        if (isNear)
+        {
+            TaskMng_Script.OpenActifTaskCanvas(gameObject);
+        }
     }
 }

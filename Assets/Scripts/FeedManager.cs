@@ -115,7 +115,6 @@ public class FeedManager : MonoBehaviour
 
                     }
                     GetComponent<SoldierBehavior>()._zoneAttribute = newZone;
-                    PlayerPrefs.SetInt(transform.name + "zone", (int)newZone); // Definie le type
                     GetComponent<SoldierBehavior>().enabled = true;
 
                 }
@@ -158,33 +157,39 @@ public class FeedManager : MonoBehaviour
                 {
                     if (Tofeed != null)
                     {
-                        if (Tofeed.GetComponent<Statistique>()._level == GetComponent<Statistique>()._level) // If les 2 monstres on le même niveau
+                        if (Tofeed.GetComponent<Statistique>()._level < 6) 
                         {
-                            if (Tofeed.GetComponent<Statistique>()._health < Tofeed.GetComponent<Statistique>()._startHealth)
+                            if (Tofeed.GetComponent<Statistique>()._level == GetComponent<Statistique>()._level) // If les 2 monstres on le même niveau
                             {
-                                int newHealth = (int)(Tofeed.GetComponent<Statistique>()._health + GetComponent<Statistique>()._health);
-                                Tofeed.GetComponent<Statistique>()._startHealth += 50;
-                                if (newHealth > Tofeed.GetComponent<Statistique>()._startHealth)
+                                if (Tofeed.GetComponent<Statistique>()._health < Tofeed.GetComponent<Statistique>()._startHealth)
                                 {
-                                    newHealth = (int)Tofeed.GetComponent<Statistique>()._startHealth;
+                                    MonsterLevelUp(Tofeed);
+                                    GetComponent<Statistique>().MonsterDieDestroy(transform, 0.1f);
                                 }
-                                Tofeed.GetComponent<Statistique>()._level++;
-                                Tofeed.GetComponent<Statistique>().ChangeHealthValue(newHealth);
-                                Tofeed.GetComponent<Statistique>().damage += 10;
-                                Tofeed.GetComponent<Statistique>().attackSpeed += 0.1f;
-                                armyManager_Script.updateMonsterColor(Tofeed, Tofeed.GetComponent<Statistique>()._level);
-                                PlayerPrefs.SetInt(Tofeed.name + "level", PlayerPrefs.GetInt(Tofeed.name + "level") + 1);
-                                PlayerPrefs.SetInt(Tofeed.name + "damage", Tofeed.GetComponent<Statistique>().damage);
-                                PlayerPrefs.SetFloat(Tofeed.name + "AtkSpeed", Tofeed.GetComponent<Statistique>().attackSpeed);
-                                GetComponent<Statistique>().MonsterDieDestroy(transform, 0.1f);
-                                Tofeed.GetComponent<Statistique>().UpdateStatInfoPanel();
-
+                                Tofeed.GetComponent<AnimationManager>()._animator.SetInteger("State", (int)GenericClass.E_MonsterAnimState.Idle);
                             }
-                            Tofeed.GetComponent<AnimationManager>()._animator.SetInteger("State", (int)GenericClass.E_MonsterAnimState.Idle);
                         }
                     }
                 }
             }
         }
     }
+
+
+    public void MonsterLevelUp(GameObject monster)
+    {
+        int newHealth = (int)(monster.GetComponent<Statistique>()._health + GetComponent<Statistique>()._health);
+        monster.GetComponent<Statistique>()._startHealth += 50;
+        if (newHealth > monster.GetComponent<Statistique>()._startHealth)
+        {
+            newHealth = (int)monster.GetComponent<Statistique>()._startHealth;
+        }
+        monster.GetComponent<Statistique>()._level++;
+        monster.GetComponent<Statistique>().ChangeHealthValue(newHealth);
+        monster.GetComponent<Statistique>().damage += 10;
+        monster.GetComponent<Statistique>().attackSpeed += 0.1f;
+        armyManager_Script.updateMonsterColor(monster, monster.GetComponent<Statistique>()._level);
+        monster.GetComponent<Statistique>().UpdateStatInfoPanel();
+    }
+
 }

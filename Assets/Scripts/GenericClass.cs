@@ -39,8 +39,10 @@ public class GenericClass : MonoBehaviour
     [System.Serializable]
     public enum E_Loot
     {
+        None,
         Flask,
         Meat,
+        Bandage,
         //FrontLeft,
         //FrontRight,
     }

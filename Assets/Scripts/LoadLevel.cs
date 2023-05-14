@@ -75,8 +75,8 @@ public class LoadLevel : MonoBehaviour
     public void NextLevel()
     {
         PlyCtr_Script.GetComponent<ArmyManager>().SaveStartMapData();
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name, LoadSceneMode.Single);
         PlayerPrefs.SetInt("MapLevel", PlayerPrefs.GetInt("MapLevel") + 1);
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name, LoadSceneMode.Single);
     }
 
     public void RestartRun()

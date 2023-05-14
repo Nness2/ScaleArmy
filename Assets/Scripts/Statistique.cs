@@ -52,11 +52,6 @@ public class Statistique : MonoBehaviour
     {
         if (Input.GetKey(KeyCode.C))
         {
-            PlayerPrefs.DeleteKey("nbr"); //
-            for (int i = 0; i < PlayerPrefs.GetInt("nbr"); i++)
-            {
-                PlayerPrefs.DeleteKey("Monster" + i + "name");
-            }
             PlayerPrefs.DeleteAll();
         }
     }
@@ -79,7 +74,6 @@ public class Statistique : MonoBehaviour
 
         if (transform.tag == "LocalPlayer")
         {
-            PlayerPrefs.SetFloat("Teddy", newHealth);
             if (_health <= 0)
             {
                 UIEndPopup.SetActive(true);
@@ -94,21 +88,12 @@ public class Statistique : MonoBehaviour
     {
         _health = amount;
         _healthbar.fillAmount = _health / _startHealth;
-        PlayerPrefs.SetFloat(transform.name, _health);
     }
 
     public void Die()
     {
         if (transform.tag == "MyMonster")
         {
-            // PlayerPrefs.SetInt("nbr", PlayerPrefs.GetInt("nbr") - 1); 
-            /*PlayerPrefs.DeleteKey(transform.name);  //Supprime les données du monstre
-            PlayerPrefs.DeleteKey(transform.name + "Health");  //Supprime les données du monstre
-            PlayerPrefs.DeleteKey(transform.name + "type");  //Supprime les données du monstre
-            PlayerPrefs.DeleteKey(transform.name + "zone");  //Supprime les données du monstre
-            plyCtrl_Script.armyManager_Script.Army.Remove(transform.gameObject);
-            Destroy(transform.gameObject);*/
-
             MonsterDieDestroy(transform, 0);
         }
         else if (transform.tag == "Enemy")
@@ -121,12 +106,6 @@ public class Statistique : MonoBehaviour
             GetComponent<SoldierBehavior>().enabled = true;
             gameObject.transform.SetParent(plyCtrl_Script.ArmyParent.transform);
 
-            PlayerPrefs.SetInt("nbr", PlayerPrefs.GetInt("nbr")+1); // Incremente le nbr de monster
-            transform.name = "Monster" + PlayerPrefs.GetInt("nbr"); // Attribue Id au nom du monstre
-            PlayerPrefs.SetFloat(transform.name, _health); // Definie le nbr de points de vie
-            PlayerPrefs.SetInt(transform.name+"level", _level); // Definie le type
-            PlayerPrefs.SetInt(transform.name+"damage", damage); // Definie le type
-            PlayerPrefs.SetFloat(transform.name+"AtkSpeed", attackSpeed); // Definie le type
 
             plyCtrl_Script.armyManager_Script.Army.Add(transform.gameObject);
         }
@@ -172,10 +151,6 @@ public class Statistique : MonoBehaviour
 
     public void MonsterDieDestroy(Transform monster, float DestroyTime)
     {
-        PlayerPrefs.DeleteKey(monster.name);  //Supprime les données du monstre
-        PlayerPrefs.DeleteKey(monster.name + "Health");  //Supprime les données du monstre
-        PlayerPrefs.DeleteKey(monster.name + "type");  //Supprime les données du monstre
-        PlayerPrefs.DeleteKey(monster.name + "zone");  //Supprime les données du monstre
         plyCtrl_Script.armyManager_Script.Army.Remove(monster.gameObject);
         Destroy(monster.gameObject);
     }

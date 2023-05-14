@@ -19,9 +19,10 @@ public class ChestBase : MonoBehaviour
     public PlayableDirector lootAnim;
 
     //lootPrefab 
-    public GameObject FiolePrefab;
-    public GameObject ViandePrefab;
+
     public InventoryManager InvMng_Script;
+
+    public bool defended = true;
 
 
     void Start()
@@ -41,34 +42,38 @@ public class ChestBase : MonoBehaviour
         TaskMng_Script = GameObject.FindGameObjectWithTag("GameManager").GetComponent<TaskManager>();
 
         //GenerateDefence
-        int mapLevel = TaskMng_Script.MapLevel;
-
-        int nbrMonster = Random.Range(2, mapLevel+4);
-
-        for (int i = 0; i < nbrMonster; i++)
+        if (defended)
         {
-            int LevelMonster = Random.Range(1, mapLevel+1);
+            int mapLevel = TaskMng_Script.MapLevel;
 
-            string monsterName = "Enemy" + i;
-            GameObject newMonster = null;
+            int nbrMonster = Random.Range(2, mapLevel + 4);
 
-            newMonster = GameObject.Instantiate(MonsterPrefab, LocationsList[i].transform.position, Quaternion.identity);
-            newMonster.GetComponent<Statistique>()._level = LevelMonster;
-            ArmyMng_Script.updateMonsterColor(newMonster, newMonster.GetComponent<Statistique>()._level);
+            for (int i = 0; i < nbrMonster; i++)
+            {
+                int LevelMonster = Random.Range(1, mapLevel + 1);
 
-            //Update monster statistique with data saved
-            newMonster.name = monsterName;
-            //newMonster.GetComponent<Statistique>()._health = PlayerPrefs.GetFloat(monsterName);
-            //newMonster.GetComponent<Statistique>().ChangeHealthValue((int)PlayerPrefs.GetFloat(monsterName));
+                string monsterName = "Enemy" + i;
+                GameObject newMonster = null;
 
-            newMonster.GetComponent<Statistique>().damage += (LevelMonster-1)*10;
-            newMonster.GetComponent<Statistique>()._health += (LevelMonster-1)*50;
-            newMonster.GetComponent<Statistique>()._startHealth += (LevelMonster-1)*50;
-            newMonster.GetComponent<Statistique>().attackSpeed += (LevelMonster-1)*0.1f;
+                newMonster = GameObject.Instantiate(MonsterPrefab, LocationsList[i].transform.position, Quaternion.identity);
+                newMonster.GetComponent<Statistique>()._level = LevelMonster;
+                ArmyMng_Script.updateMonsterColor(newMonster, newMonster.GetComponent<Statistique>()._level);
 
-            newMonster.transform.SetParent(transform);
-            //newMonster.GetComponent<SoldierBehavior>()._zoneAttribute = (GenericClass.E_Zone)PlayerPrefs.GetInt(monsterName + "zone");
+                //Update monster statistique with data saved
+                newMonster.name = monsterName;
+                //newMonster.GetComponent<Statistique>()._health = PlayerPrefs.GetFloat(monsterName);
+                //newMonster.GetComponent<Statistique>().ChangeHealthValue((int)PlayerPrefs.GetFloat(monsterName));
+
+                newMonster.GetComponent<Statistique>().damage += (LevelMonster - 1) * 10;
+                newMonster.GetComponent<Statistique>()._health += (LevelMonster - 1) * 50;
+                newMonster.GetComponent<Statistique>()._startHealth += (LevelMonster - 1) * 50;
+                newMonster.GetComponent<Statistique>().attackSpeed += (LevelMonster - 1) * 0.1f;
+
+                newMonster.transform.SetParent(transform);
+                //newMonster.GetComponent<SoldierBehavior>()._zoneAttribute = (GenericClass.E_Zone)PlayerPrefs.GetInt(monsterName + "zone");
+            }
         }
+
     }
 
     void Update()
@@ -94,39 +99,58 @@ public class ChestBase : MonoBehaviour
 
     private void OnMouseDown()
     {
-        if (isNear && !LootIsOut)
+        bool invFull = true;
+        foreach (GenericClass.E_Loot loot in InvMng_Script.InventoryElements)
         {
-            GameObject choosedLoot = RandomLoot();
-            choosedLoot = Instantiate(choosedLoot, transform.position, transform.rotation);
-            choosedLoot.transform.SetParent(lootAnim.transform);
-            StartCoroutine(EndAnimation(choosedLoot));
-            lootAnim.Play();
-            LootIsOut = true;
+            if(loot == GenericClass.E_Loot.None)
+            {
+                invFull = false;
+            }
+        }
+
+        if (!invFull)
+        {
+            if (isNear && !LootIsOut)
+            {
+                GameObject choosedLoot = RandomLoot();
+                choosedLoot = Instantiate(choosedLoot, transform.position, transform.rotation);
+                choosedLoot.transform.SetParent(lootAnim.transform);
+
+                StartCoroutine(EndAnimation(choosedLoot));
+                lootAnim.Play();
+                LootIsOut = true;
+            }
         }
     }
 
     IEnumerator EndAnimation(GameObject choosedLoot)
     {
         yield return new WaitForSeconds(1);
-        InvMng_Script.AddLootToInventory(choosedLoot.GetComponent<LootClass>()._image, choosedLoot.GetComponent<LootClass>()._lootType);
-
+        Debug.Log(choosedLoot.GetComponent<LootClass>()._lootType);
+        InvMng_Script.AddLootToInventory(choosedLoot.GetComponent<LootClass>()._lootType);
         Destroy(choosedLoot);
     }
 
 
     private GameObject RandomLoot()
     {
-        int randLoot = Random.Range(0, 2);
+        int randLoot = Random.Range(1, 4);
+        Debug.Log(randLoot);
         GameObject choosedLoot = null;
-        switch (randLoot)
+        switch ((GenericClass.E_Loot)randLoot)
         {
-            case 0:
-                choosedLoot = FiolePrefab;
+            case GenericClass.E_Loot.Flask:
+                choosedLoot = InvMng_Script.FiolePrefab;
                 break;
-            case 1:
-                choosedLoot = ViandePrefab;
+            case GenericClass.E_Loot.Meat:
+                choosedLoot = InvMng_Script.ViandePrefab;
+                break;
+            case GenericClass.E_Loot.Bandage:
+                choosedLoot = InvMng_Script.BandagePrefab;
                 break;
         }
         return choosedLoot;
     }
+
+
 }

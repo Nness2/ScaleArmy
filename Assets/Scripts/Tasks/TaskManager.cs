@@ -20,6 +20,7 @@ public class TaskManager : MonoBehaviour
 
     void Start()
     {
+        ActifTaskTotem = null;
         MapLevel = PlayerPrefs.GetInt("MapLevel")+1;
         RoomLevelText.text = "Room " + MapLevel;
         NbrTaskEnd = 0;
@@ -41,10 +42,10 @@ public class TaskManager : MonoBehaviour
         if (Input.GetKey(KeyCode.O))
         {
             doorAnim.Play();
-            Debug.Log("test");
         }
         #endregion
 
+        /*
         #region DetectProximityTask
         //Si Le button de tache n'est pas activé
         if (ActifTaskTotem == null)
@@ -86,13 +87,14 @@ public class TaskManager : MonoBehaviour
         }
 
         #endregion
+    */
     }
 
 
-    public void OpenActifTaskCanvas()
+    public void OpenActifTaskCanvas(GameObject taskObj)
     {
-        if (ActifTaskTotem != null)
-            ActifTaskTotem.GetComponent<TaskBase>().TaskCanvas.SetActive(true);
+        ActifTaskTotem = taskObj;
+        ActifTaskTotem.GetComponent<TaskBase>().TaskCanvas.SetActive(true);
     }
 
     public void CloseActifTaskCanvas()
