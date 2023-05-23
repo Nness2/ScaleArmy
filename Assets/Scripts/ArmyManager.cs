@@ -8,6 +8,8 @@ public class ArmyManager : MonoBehaviour
     public GameObject ZonesBackMiddle;
     public GameObject ZonesLeft;
     public GameObject ZonesRight;
+    public GameObject ZonesFrtRight;
+    public GameObject ZonesFrtLeft;
 
     //Material permettant de changer le mat des zones quand on les overlays avec un montre dans la main
     public Material GreenZone;
@@ -154,6 +156,8 @@ public class ArmyManager : MonoBehaviour
             ZonesBackMiddle.GetComponent<MeshRenderer>().enabled = true;
             ZonesLeft.GetComponent<MeshRenderer>().enabled = true;
             ZonesRight.GetComponent<MeshRenderer>().enabled = true;
+            ZonesFrtLeft.GetComponent<MeshRenderer>().enabled = true;
+            ZonesFrtRight.GetComponent<MeshRenderer>().enabled = true;
         }
 
         else
@@ -161,6 +165,8 @@ public class ArmyManager : MonoBehaviour
             ZonesBackMiddle.GetComponent<MeshRenderer>().enabled = false;
             ZonesLeft.GetComponent<MeshRenderer>().enabled = false;
             ZonesRight.GetComponent<MeshRenderer>().enabled = false;
+            ZonesFrtLeft.GetComponent<MeshRenderer>().enabled = false;
+            ZonesFrtRight.GetComponent<MeshRenderer>().enabled = false;
         }
     }
 
@@ -172,6 +178,8 @@ public class ArmyManager : MonoBehaviour
         ZonesBackMiddle.GetComponent<MeshRenderer>().material = WhiteZone;
         ZonesLeft.GetComponent<MeshRenderer>().material = WhiteZone;
         ZonesRight.GetComponent<MeshRenderer>().material = WhiteZone;
+        ZonesFrtLeft.GetComponent<MeshRenderer>().material = WhiteZone;
+        ZonesFrtRight.GetComponent<MeshRenderer>().material = WhiteZone;
     }
 
     //Trouve la postion sur de la zone correspondente pour faire spawn le montre au bonne endroit
@@ -191,6 +199,14 @@ public class ArmyManager : MonoBehaviour
 
             case GenericClass.E_Zone.Right:
                 zonePose = ZonesRight.transform.position;
+                break;
+
+            case GenericClass.E_Zone.FrontLeft:
+                zonePose = ZonesFrtLeft.transform.position;
+                break;
+
+            case GenericClass.E_Zone.FrontRight:
+                zonePose = ZonesFrtRight.transform.position;
                 break;
         }
 

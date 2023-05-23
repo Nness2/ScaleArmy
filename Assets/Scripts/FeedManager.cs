@@ -125,7 +125,13 @@ public class FeedManager : MonoBehaviour
 
     void OnMouseDown()
     {
-        if (plyrControl_Script.ManagerActivate || plyrControl_Script.FeedActivate && !plyrControl_Script.CamFollow_Script.CamMovable)
+        /*if (!plyrControl_Script.ManagerActivate)
+        {
+            plyrControl_Script.SwitchManagerMode();
+        }*/
+
+
+            if (plyrControl_Script.ManagerActivate || plyrControl_Script.FeedActivate)// && !plyrControl_Script.CamFollow_Script.CamMovable)
         {
             if (gameObject.transform.tag == "MyMonster")// && gameObject.GetComponent<SoldierBehavior>()._actionState == GenericClass.E_Action.Wait)
             {

@@ -24,9 +24,12 @@ public class ChestBase : MonoBehaviour
 
     public bool defended = true;
 
+    public List<GameObject> MonsterList;
 
     void Start()
     {
+        MonsterList = new List<GameObject>();
+
         InvMng_Script = GameObject.FindGameObjectWithTag("GameManager").GetComponent<InventoryManager>();
         isNear = false;
         LootIsOut = false;
@@ -56,6 +59,10 @@ public class ChestBase : MonoBehaviour
                 GameObject newMonster = null;
 
                 newMonster = GameObject.Instantiate(MonsterPrefab, LocationsList[i].transform.position, Quaternion.identity);
+
+                MonsterList.Add(newMonster);
+                newMonster.GetComponent<EnemyBehavior>().ObjectifDefended = transform.gameObject;// Dis au monster qu'elle objectif il defent, permet de trouver la liste des montres du groupe dans le gameobject
+
                 newMonster.GetComponent<Statistique>()._level = LevelMonster;
                 ArmyMng_Script.updateMonsterColor(newMonster, newMonster.GetComponent<Statistique>()._level);
 

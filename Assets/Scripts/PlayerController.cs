@@ -11,6 +11,7 @@ public class PlayerController : MonoBehaviour
 
     [SerializeField] private float _moveSpeed;
 
+
     public List<GenericClass.E_Zone> ActivesZone;
 
     public ArmyManager armyManager_Script;
@@ -22,6 +23,8 @@ public class PlayerController : MonoBehaviour
     public Color green;
     public Color white;
 
+    public bool IsAgressif;
+    public bool IsRunning;
     public bool ManagerActivate;
     public bool FeedActivate;
 
@@ -46,6 +49,9 @@ public class PlayerController : MonoBehaviour
 
     public Transform ArmyParent;
 
+    public GameObject SelectUIAgressif;
+    public GameObject SelectUIPassif;
+
     void Start()
     {
         //LastEnemyClicked = null;
@@ -55,9 +61,12 @@ public class PlayerController : MonoBehaviour
         ActivesZone.Add(GenericClass.E_Zone.Back);
         ActivesZone.Add(GenericClass.E_Zone.Left);
         ActivesZone.Add(GenericClass.E_Zone.Right);
+        ActivesZone.Add(GenericClass.E_Zone.FrontLeft);
+        ActivesZone.Add(GenericClass.E_Zone.FrontRight);
 
         armyManager_Script = GameObject.FindGameObjectWithTag("LocalPlayer").GetComponent<ArmyManager>();
-
+        IsAgressif = true;
+        IsRunning = false;
         //ActivesZone.Add(GenericClass.E_Zone.FrontLeft);
         //ActivesZone.Add(GenericClass.E_Zone.FrontRight);
     }
@@ -77,6 +86,7 @@ public class PlayerController : MonoBehaviour
         {
             transform.rotation = Quaternion.LookRotation(_rigidbody.velocity);
             _animator.SetBool("isRunning", true);
+            IsRunning = true;
             GameObject[] monsterList = GameObject.FindGameObjectsWithTag("MyMonster");
             GM_Script.GetComponent<DrawSpline>().CleanLineRenderer();
 
@@ -106,6 +116,7 @@ public class PlayerController : MonoBehaviour
         else
         {
             _animator.SetBool("isRunning", false);
+            IsRunning = false;
         }
 
         if (Input.GetMouseButtonUp(0))
@@ -114,8 +125,29 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.A))
+        {
+            SwitchManagerMode();
+        }
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            if (!IsAgressif)
+            {
+                ChangeActionToAttack();
+
+            }
+            else
+            {
+                ChangeActionToFollow();
+            }
+        }
+    }
+
     public void ChangeActionToAttack()
     {
+        IsAgressif = true;
         GameObject[] Army = GameObject.FindGameObjectsWithTag("MyMonster");
 
         foreach (GameObject obj in Army)
@@ -125,10 +157,13 @@ public class PlayerController : MonoBehaviour
                 obj.GetComponent<SoldierBehavior>()._actionState = GenericClass.E_Action.Attack;
             }
         }
+        SelectUIAgressif.SetActive(true);
+        SelectUIPassif.SetActive(false);
     }
 
     public void ChangeActionToFollow()
     {
+        IsAgressif = false;
         if (this.enabled)
         {
             GameObject[] Army = GameObject.FindGameObjectsWithTag("MyMonster");
@@ -143,6 +178,8 @@ public class PlayerController : MonoBehaviour
                 }
             }
         }
+        SelectUIAgressif.SetActive(false);
+        SelectUIPassif.SetActive(true);
     }
 
     public void ChangeActionToWait()
@@ -254,18 +291,21 @@ public class PlayerController : MonoBehaviour
 
     public void SwitchManagerMode()
     {
-        ManagerActivate = !ManagerActivate;
-        FeedActivate = false;
-        armyManager_Script.ShowZones(ManagerActivate);
-        GM_Script.GetComponent<DrawSpline>().CleanLineRenderer();
+        if (!IsRunning)
+        {
+            ManagerActivate = !ManagerActivate;
+            FeedActivate = false;
+            armyManager_Script.ShowZones(ManagerActivate);
+            GM_Script.GetComponent<DrawSpline>().CleanLineRenderer();
 
-        if (ManagerActivate)
-        {
-            CamFollow_Script.Zoom(true);
-        }
-        else
-        {
-            CamFollow_Script.Zoom(false);
+            if (ManagerActivate)
+            {
+                CamFollow_Script.Zoom(true);
+            }
+            else
+            {
+                CamFollow_Script.Zoom(false);
+            }
         }
     }
 
@@ -321,6 +361,8 @@ public class PlayerController : MonoBehaviour
         {
             Soldier.currentTarget = monsterTarget;//LastEnemyClicked.transform.gameObject;
             Soldier.currentTargetStatistique = Soldier.currentTarget.GetComponent<Statistique>(); // on réccupére également ses information
+
+
             Soldier.SelfIdle = false;
         }
     }

@@ -24,6 +24,8 @@ public class EnemyBehavior : MonoBehaviour
 
     private AnimationManager Anim_Script;
 
+    public GameObject ObjectifDefended;
+
     private void Start()
     {
         player = GameObject.FindGameObjectWithTag("LocalPlayer").GetComponent<PlayerController>();
@@ -67,8 +69,25 @@ public class EnemyBehavior : MonoBehaviour
             }
             if(Nearest != null)
             {
-                currentTarget = Nearest;
-                currentTargetStatistique = currentTarget.GetComponent<Statistique>();
+                //Attribue la target à tout les monstres du groupe
+                if (ObjectifDefended.GetComponent<TaskBase>() != null)
+                {
+                    foreach (GameObject obj in ObjectifDefended.GetComponent<TaskBase>().MonsterList)
+                    {
+                        obj.GetComponent<EnemyBehavior>().currentTarget = Nearest;
+                        obj.GetComponent<EnemyBehavior>().currentTargetStatistique = Nearest.GetComponent<Statistique>();
+                    }
+                }
+
+                //Attribue la target à tout les monstres du groupe
+                if (ObjectifDefended.GetComponent<ChestBase>() != null)
+                {
+                    foreach (GameObject obj in ObjectifDefended.GetComponent<ChestBase>().MonsterList)
+                    {
+                        obj.GetComponent<EnemyBehavior>().currentTarget = Nearest;
+                        obj.GetComponent<EnemyBehavior>().currentTargetStatistique = Nearest.GetComponent<Statistique>();
+                    }
+                }
             }
         }
 
@@ -84,7 +103,7 @@ public class EnemyBehavior : MonoBehaviour
                 Anim_Script._animator.SetInteger("State", (int)GenericClass.E_MonsterAnimState.Run);
             }
 
-            if (distance < DetectDistance && distance >= attackDistance)
+            if (/*distance < DetectDistance &&*/ distance >= attackDistance)
             {
 
                 transform.position = Vector3.MoveTowards(transform.position, currentTarget.transform.position, speed * Time.deltaTime);
@@ -105,7 +124,6 @@ public class EnemyBehavior : MonoBehaviour
                 StartCoroutine(ResetBoolAfterDelay());
                 transform.rotation = Quaternion.LookRotation(currentTarget.transform.position - transform.position);
                 currentTargetStatistique.TakeDamage(Mathf.RoundToInt(10 + _damage * GetComponent<Statistique>()._healthbar.fillAmount), GenericClass.E_Action.Wait);
-
             }
         }
     }

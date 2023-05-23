@@ -151,6 +151,12 @@ public class SoldierBehavior : MonoBehaviour
                     case GenericClass.E_Zone.Right:
                         player = army_Script.ZonesRight.transform;
                         break;
+                    case GenericClass.E_Zone.FrontLeft:
+                        player = army_Script.ZonesFrtLeft.transform;
+                        break;
+                    case GenericClass.E_Zone.FrontRight:
+                        player = army_Script.ZonesFrtRight.transform;
+                        break;
                     case GenericClass.E_Zone.Totem:
                         player = Totem.transform;
                         break;
@@ -198,6 +204,12 @@ public class SoldierBehavior : MonoBehaviour
                             break;
                         case GenericClass.E_Zone.Right:
                             player = army_Script.ZonesRight.transform;
+                            break;
+                        case GenericClass.E_Zone.FrontLeft:
+                            player = army_Script.ZonesFrtLeft.transform;
+                            break;
+                        case GenericClass.E_Zone.FrontRight:
+                            player = army_Script.ZonesFrtRight.transform;
                             break;
                         case GenericClass.E_Zone.Line:
                             player = Character.GetComponent<PlayerController>().LineFollower.transform;

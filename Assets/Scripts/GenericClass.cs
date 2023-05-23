@@ -21,8 +21,8 @@ public class GenericClass : MonoBehaviour
         Right,
         Line,
         Totem,
-        //FrontLeft,
-        //FrontRight,
+        FrontLeft,
+        FrontRight,
     }
 
     [System.Serializable]
@@ -32,8 +32,6 @@ public class GenericClass : MonoBehaviour
         Run,
         Floating,
         Eat,
-        //FrontLeft,
-        //FrontRight,
     }
 
     [System.Serializable]
@@ -43,8 +41,6 @@ public class GenericClass : MonoBehaviour
         Flask,
         Meat,
         Bandage,
-        //FrontLeft,
-        //FrontRight,
     }
 
 
@@ -55,7 +51,6 @@ public class GenericClass : MonoBehaviour
         
     }
 
-    // Update is called once per frame
     void Update()
     {
         

@@ -28,10 +28,13 @@ public class CameraFollow : MonoBehaviour
     public float maxZoomFOW = 60;
     public float minZoomFOW = 40;
 
+    public Vector3 InitPosition;
+
     private void Start()
     {
         CamMovable = false;
         plyrControl_Script = GameObject.FindGameObjectWithTag("LocalPlayer").GetComponent<PlayerController>();
+        InitPosition = transform.localPosition;
     }
 
     private void LateUpdate()
@@ -46,33 +49,50 @@ public class CameraFollow : MonoBehaviour
         {
             transform.position = target.position + offset;
         }
+
+        int layerMask = 1 << LayerMask.NameToLayer("BackWall");
+        Vector3 ray = plyrControl_Script.transform.position;
+        RaycastHit hit;
+        if (Physics.Raycast(ray, (transform.position - plyrControl_Script.transform.position) * 100, out hit, 100, layerMask))
+        {
+            if (hit.point.y > 7)
+            {
+                transform.position = hit.point;
+            }
+            else if (hit.point.y < 7)
+            {
+                transform.position = new Vector3 (hit.point.x, 7, hit.point.z);
+            }
+        }
     }
 
     private void Update()
     {
-        /*
-        #region ZoomTouchScreen
-        if (Input.touchCount == 2)
-        {
-            Touch touch1 = Input.GetTouch(0);
-            Touch touch2 = Input.GetTouch(1);
 
-            Vector2 touch1PrevPos = touch1.position - touch1.deltaPosition;
-            Vector2 touch2PrevPos = touch2.position - touch2.deltaPosition;
 
-            float prevTouchDeltaMag = (touch1PrevPos - touch2PrevPos).magnitude;
-            float touchDeltaMag = (touch1.position - touch2.position).magnitude;
+            /*
+            #region ZoomTouchScreen
+            if (Input.touchCount == 2)
+            {
+                Touch touch1 = Input.GetTouch(0);
+                Touch touch2 = Input.GetTouch(1);
 
-            float deltaMagnitudeDiff = prevTouchDeltaMag - touchDeltaMag;
+                Vector2 touch1PrevPos = touch1.position - touch1.deltaPosition;
+                Vector2 touch2PrevPos = touch2.position - touch2.deltaPosition;
 
-            transform.GetComponent<Camera>().orthographicSize += deltaMagnitudeDiff * zoomSpeed;
+                float prevTouchDeltaMag = (touch1PrevPos - touch2PrevPos).magnitude;
+                float touchDeltaMag = (touch1.position - touch2.position).magnitude;
 
-            //transform.GetComponent<Camera>().orthographicSize = Mathf.Clamp(transform.GetComponent<Camera>().orthographicSize, minZoom, maxZoom);
+                float deltaMagnitudeDiff = prevTouchDeltaMag - touchDeltaMag;
+
+                transform.GetComponent<Camera>().orthographicSize += deltaMagnitudeDiff * zoomSpeed;
+
+                //transform.GetComponent<Camera>().orthographicSize = Mathf.Clamp(transform.GetComponent<Camera>().orthographicSize, minZoom, maxZoom);
+            }
+
+            #endregion
+            */
         }
-
-        #endregion
-        */
-    }
 
 
     public void SwitchCameraMode()
